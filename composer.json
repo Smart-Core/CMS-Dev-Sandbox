@@ -24,6 +24,7 @@
         "symfony/http-client": "5.3.*",
         "symfony/intl": "5.3.*",
         "symfony/mailer": "5.3.*",
+        "symfony/messenger": "5.3.*",
         "symfony/mime": "5.3.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.3.*",
@@ -39,6 +40,8 @@
         "symfony/twig-bundle": "5.3.*",
         "symfony/validator": "5.3.*",
         "symfony/web-link": "5.3.*",
+        "symfony/webapp-meta": "^1.0",
+        "symfony/webpack-encore-bundle": "^1.12",
         "symfony/yaml": "5.3.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
