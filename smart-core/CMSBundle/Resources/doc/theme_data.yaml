@@ -1,0 +1,6 @@
+themes_data:
+    types:
+        string: SmartCore\CMSBundle\PageElement\String
+        text: ~
+        image: ~
+

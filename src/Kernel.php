@@ -22,6 +22,8 @@ class Kernel extends BaseKernel
         } else {
             $container->import('../config/{services}.php');
         }
+
+        $this->getBundle('CMSBundle')->configureContainer($container, $this->getProjectDir());
     }
 
     protected function configureRoutes(RoutingConfigurator $routes): void

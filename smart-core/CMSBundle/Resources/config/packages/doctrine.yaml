@@ -1,0 +1,50 @@
+doctrine:
+    dbal:
+        connections:
+            cms:
+                url: 'sqlite:///%kernel.project_dir%/cms/db/cms.sqlite'
+                driver: pdo_sqlite
+                charset: utf8
+#            site_1:
+#                url: 'sqlite:///%kernel.project_dir%/cms/db/site_1.sqlite'
+#                driver: pdo_sqlite
+#                charset: utf8
+#            site_2:
+#                url: 'sqlite:///%kernel.project_dir%/cms/db/site_2.sqlite'
+#                driver: pdo_sqlite
+#                charset: utf8
+
+    orm:
+#        resolve_target_entities:
+#            Symfony\Component\Security\Core\User\UserInterface: App\Entity\User
+        entity_managers:
+            cms:
+                connection: cms
+                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+                mappings:
+                    CMSBundle:
+                        is_bundle: true
+                        type: annotation
+                        dir: 'EntitySite'
+                        prefix: 'SmartCore\CMSBundle\EntitySite'
+                        alias: CMS
+#            site_1:
+#                connection: site_1
+#                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+#                mappings:
+#                    CMSBundle:
+#                        is_bundle: true
+#                        type: annotation
+#                        dir: 'EntityStructure'
+#                        prefix: 'SmartCore\CMSBundle\EntityStructure'
+#                        alias: Site1
+#            site_2:
+#                connection: site_2
+#                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+#                mappings:
+#                    CMSBundle:
+#                        is_bundle: true
+#                        type: annotation
+#                        dir: 'EntityStructure'
+#                        prefix: 'SmartCore\CMSBundle\EntityStructure'
+#                        alias: Site2

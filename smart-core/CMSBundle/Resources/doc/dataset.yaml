@@ -1,0 +1,79 @@
+dataset:
+    tables:
+        Vich\Uploadable:
+    fields:
+        custom:
+            Vich\UploadableField:
+                mapping: string
+                fileNameProperty: string
+        traits:
+            SmartCore\RadBundle\Doctrine\ColumnTrait\Id: Первичный ключ
+            SmartCore\RadBundle\Doctrine\ColumnTrait\Email: Email
+            SmartCore\RadBundle\Doctrine\ColumnTrait\EmailUnique: Уникальный Email
+            SmartCore\RadBundle\Doctrine\ColumnTrait\EmailUniqueNotNull: Уникальный обязательный Email
+        types:
+            # Doctrine\DBAL\Types\Types
+            array:
+                php_type: array
+            bigint:
+                php_type: int
+            binary:
+                php_type: string
+            blob:
+                php_type: string
+            boolean:
+                php_type: bool
+            date:
+                php_type: \DateTimeInterface
+            date_immutable:
+            dateinterval:
+            datetime:
+                php_type: \DateTimeInterface
+                default:
+                    - CURRENT_TIMESTAMP
+                    -
+            datetime_immutable:
+            datetimetz:
+            datetimetz_immutable:
+            decimal:
+                php_type: float
+                precision: int
+                scale: int
+            float:
+                php_type: float
+            guid:
+            integer:
+                options:
+                    default: int
+                    unsigned: bool
+            json:
+            object:
+            simple_array:
+            smallint:
+            string:
+                php_type: string
+                length: int
+            text:
+                php_type: string
+            time:
+            time_immutable:
+            # Associations
+            entity:
+                php_type: 'target класс или Collection'
+                m2m: bool
+                target: string # class name
+                nullable: bool # @ORM\JoinColumn(nullable=false)
+                orderBy: array # @ORM\OrderBy({"position" = "ASC"})
+                onDelete: string # @ORM\JoinColumn(onDelete="CASCADE")
+                referencedColumnName: string # @ORM\JoinColumn(referencedColumnName="id")
+                cascade:
+                    - persist
+                    - remove
+                inversedBy: string # ?
+                mappedBy: string # ?
+                orphanRemoval: bool
+                fetch: string # {"LAZY", "EAGER", "EXTRA_LAZY"}
+                indexBy: string # ? OneToMany, ManyToMany
+            # Custom
+            uuid:
+                php_type: \Ramsey\Uuid
