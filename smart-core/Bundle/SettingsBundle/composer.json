@@ -1,0 +1,24 @@
+{
+    "name": "smart-core/settings-bundle",
+    "description": "SmartCore Settings Bundle.",
+    "keywords": ["settings", "bundle"],
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Artem Ryzhkov",
+            "email": "artem@smart-core.org",
+            "homepage": "http://smart-core.org"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.1",
+        "smart-core/core-bundle": "dev-master"
+    },
+    "suggest": {
+        "doctrine/doctrine-cache-bundle": "dev-master"
+    },
+    "autoload": {
+        "psr-4": { "SmartCore\\Bundle\\SettingsBundle\\": "" }
+    }
+}

@@ -1,0 +1,17 @@
+smart.media.img:
+    path: /{collection}/{filter}/{slug}
+    defaults:
+        _controller: SmartMediaBundle:Image:render
+    requirements:
+        slug: '.+'
+
+smart.media.upload:
+    path: /upload
+    defaults:
+        _controller: SmartMediaBundle:Image:upload
+    methods: 'POST'
+
+smart.media.remove:
+    path: /remove
+    defaults:
+        _controller: SmartMediaBundle:Image:remove

@@ -1,0 +1,45 @@
+{
+    "name": "smart-core/cms-bundle",
+    "description": "Base Bundle of Smart Core CMS.",
+    "keywords": ["cmf", "cms", "bundle", "symfony"],
+    "type": "symfony-bundle",
+    "homepage": "http://smart-core.org",
+    "authors": [
+        {
+            "name": "Artem Ryzhkov",
+            "email": "artem@smart-core.org",
+            "homepage": "http://smart-core.org"
+        }
+    ],
+    "require": {
+        "php": ">=8.0.2",
+        "ext-curl": "*",
+        "ext-dom": "*",
+        "ext-intl": "*",
+        "ext-mbstring": "*",
+        "ext-xml": "*",
+        "ext-json": "*",
+
+        "doctrine/annotations": "^1.0",
+        "doctrine/doctrine-bundle": "^2.4",
+        "doctrine/orm": "^2.10",
+
+        "smart-core/rad-bundle": "dev-master",
+
+        "sensio/framework-extra-bundle": "^6.2",
+        "symfony/asset": "5.3.*",
+        "symfony/framework-bundle": "5.3.*",
+        "symfony/translation": "5.3.*",
+        "symfony/twig-bundle": "5.3.*",
+        "symfony/validator": "5.3.*",
+        "symfony/yaml": "5.3.*",
+        "twig/extra-bundle": "^3.0",
+        "twig/twig": "^3.0"
+    },
+    "config": {
+        "preferred-install": "source"
+    },
+    "autoload": {
+        "psr-4": {"SmartCore\\CMSBundle\\": ""}
+    }
+}

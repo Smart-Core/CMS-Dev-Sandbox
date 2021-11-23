@@ -1,0 +1,26 @@
+
+smart_module.menu.admin:
+    path: /
+    defaults:
+        _controller: MenuModuleBundle:Admin:index
+
+smart_module.menu.admin_menu:
+    path: /{menu_id}
+    defaults:
+        _controller: MenuModuleBundle:Admin:menu
+    requirements:
+        menu_id: \d+
+
+smart_module.menu.admin_menu_edit:
+    path: /{menu_id}/edit
+    defaults:
+        _controller: MenuModuleBundle:Admin:menuEdit
+    requirements:
+        menu_id: \d+
+
+smart_module.menu.admin_item:
+    path: /item/{item_id}
+    defaults:
+        _controller: MenuModuleBundle:Admin:item
+    requirements:
+        item_id: \d+
