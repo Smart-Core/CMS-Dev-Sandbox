@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartCore\CMSBundle\EntityStructure;
+namespace SmartCore\CMSBundle\Site\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,8 +12,8 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity()
- * @ORM\Table(name="cms_folders",
+ * @ORM\Entity(repositoryClass="SmartCore\CMSBundle\Site\Repository\FolderRepository")
+ * @ORM\Table(name="folders",
  *      indexes={
  *          @ORM\Index(columns={"is_active"}),
  *          @ORM\Index(columns={"deleted_at"}),
@@ -37,12 +37,10 @@ class Folder
     use ColumnTrait\UserId;
 
     /**
-     * @var Folder
-     *
      * @ORM\ManyToOne(targetEntity="Folder", inversedBy="children", cascade={"persist"})
-     * ORM\JoinColumn(name="folder_pid")
+     * @ORM\JoinColumn(nullable=true)
      */
-    protected $parent_folder;
+    protected ?Folder $parent_folder = null;
 
     /**
      * @var Folder[]|ArrayCollection
@@ -86,90 +84,68 @@ class Folder
     protected $groups_granted_write;
 
     /**
-     * @var array
-     *
      * @ORM\Column(type="array")
      */
-    protected $permissions_cache;
+    protected array $permissions_cache = [];
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string")
      * @Assert\NotBlank()
      */
-    protected $title;
+    protected string $title;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=190, nullable=true)
      */
-    protected $slug;
+    protected ?string $slug = null;
 
     /**
-     * @var bool
-     *
      * @ORM\Column(type="boolean")
      */
-    protected $is_file;
+    protected bool $is_file;
 
     /**
-     * @var array
-     *
      * @ORM\Column(type="array", nullable=true)
      */
-    protected $meta;
+    protected ?array $meta = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    protected $redirect_to;
+    protected ?string $redirect_to = null;
 
     /**
-     * @var string
-     *
-     * ORM\Column(type="integer", nullable=true)
-     *
-     * @todo можно сделать через связь
+     * @ORM\ManyToOne(targetEntity="Node")
+     * @ORM\Column(nullable=true)
      */
-    protected $router_node_id;
+    protected ?Node $router_node = null;
 
     /**
-     * @var array
-     *
      * @ORM\Column(type="array", nullable=true)
      */
-    protected $lockout_nodes;
+    protected ?array $lockout_nodes = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=30, nullable=true)
      */
-    protected $template_inheritable;
+    protected ?string $template_inheritable = null;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=30, nullable=true)
      */
-    protected $template_self;
+    protected ?string $template_self = null;
 
     /**
      * Для отображения в формах. Не маппится в БД.
      */
-    protected $form_title = '';
-
+    protected string $form_title = '';
 
     public function __construct()
     {
         $this->groups_granted_read  = new ArrayCollection();
         $this->groups_granted_write = new ArrayCollection();
         $this->children             = new ArrayCollection();
-        $this->created_at           = new \DateTime();
+        $this->created_at           = new \DateTimeImmutable();
         $this->is_active            = true;
         $this->is_file              = false;
         $this->lockout_nodes        = null;
@@ -182,13 +158,9 @@ class Folder
         $this->redirect_to          = null;
         $this->router_node_id       = null;
         $this->template_inheritable = null;
-        $this->template_self        = null;
         $this->uri_part             = null;
     }
 
-    /**
-     * @return string
-     */
     public function __toString(): string
     {
         return $this->getTitle();
@@ -226,11 +198,6 @@ class Folder
         return $this->nodes;
     }
 
-    /**
-     * @param string $title
-     *
-     * @return $this
-     */
     public function setTitle(string $title): self
     {
         $this->title = $title;
@@ -238,19 +205,11 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    /**
-     * @param bool $is_file
-     *
-     * @return $this
-     */
     public function setIsFile(bool $is_file): self
     {
         $this->is_file = $is_file;
@@ -258,47 +217,28 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsFile(): bool
     {
         return $this->is_file;
     }
 
-    /**
-     * @return bool
-     */
     public function isFile(): bool
     {
         return $this->is_file;
     }
 
-    /**
-     * @param string $uri_part
-     *
-     * @return $this
-     */
-    public function setUriPart($uri_part): self
+    public function setUriPart(?string $uri_part): self
     {
         $this->uri_part = $uri_part;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getUriPart(): ?string
+    public function getUriPart(): string
     {
         return (string) $this->uri_part;
     }
 
-    /**
-     * @param array $meta
-     *
-     * @return $this
-     */
     public function setMeta(array $meta): self
     {
         foreach ($meta as $name => $value) {
@@ -312,39 +252,23 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getMeta(): array
     {
         return empty($this->meta) ? [] : $this->meta;
     }
 
-    /**
-     * @param Folder $parent_folder
-     *
-     * @return $this
-     */
-    public function setParentFolder(Folder $parent_folder): Folder
+    public function setParentFolder(Folder $parent_folder): self
     {
         $this->parent_folder = ($this->getId() == 1) ? null : $parent_folder;
 
         return $this;
     }
 
-    /**
-     * @return Folder|null
-     */
     public function getParentFolder(): ?self
     {
         return $this->parent_folder;
     }
 
-    /**
-     * @param string $form_title
-     *
-     * @return $this
-     */
     public function setFormTitle(string $form_title): self
     {
         $this->form_title = $form_title;
@@ -352,39 +276,23 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getFormTitle(): string
     {
         return $this->form_title;
     }
 
-    /**
-     * @param int|null $router_node_id
-     *
-     * @return $this
-     */
-    public function setRouterNodeId($router_node_id): self
+    public function setRouterNodeId(?int $router_node_id): self
     {
         $this->router_node_id = empty($router_node_id) ? null : $router_node_id;
 
         return $this;
     }
 
-    /**
-     * @return int|null
-     */
     public function getRouterNodeId(): ?int
     {
         return $this->router_node_id;
     }
 
-    /**
-     * @param string $template_inheritable
-     *
-     * @return $this
-     */
     public function setTemplateInheritable(?string $template_inheritable): self
     {
         $this->template_inheritable = $template_inheritable;
@@ -392,19 +300,11 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTemplateInheritable(): ?string
     {
         return $this->template_inheritable;
     }
 
-    /**
-     * @param string $template_self
-     *
-     * @return $this
-     */
     public function setTemplateSelf(?string $template_self): self
     {
         $this->template_self = $template_self;
@@ -412,9 +312,6 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getTemplateSelf(): ?string
     {
         return $this->template_self;
@@ -430,21 +327,14 @@ class Folder
 
     /**
      * @param Region[]|ArrayCollection $regions
-     *
-     * @return $this
      */
-    public function setRegions($regions): self
+    public function setRegions(Collection $regions): self
     {
         $this->regions = $regions;
 
         return $this;
     }
 
-    /**
-     * @param UserGroup $userGroup
-     *
-     * @return Folder
-     */
     public function addGroupGrantedRead(UserGroup $userGroup): self
     {
         if (!$this->groups_granted_read->contains($userGroup)) {
@@ -454,9 +344,6 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return Folder
-     */
     public function clearGroupGrantedRead(): self
     {
         $this->groups_granted_read->clear();
@@ -474,22 +361,15 @@ class Folder
 
     /**
      * @param ArrayCollection|UserGroup[] $groups_granted_read
-     *
-     * @return $this
      */
-    public function setGroupsGrantedRead($groups_granted_read)
+    public function setGroupsGrantedRead(Collection $groups_granted_read): self
     {
         $this->groups_granted_read = $groups_granted_read;
 
         return $this;
     }
 
-    /**
-     * @param UserGroup $userGroup
-     *
-     * @return Folder
-     */
-    public function addGroupGrantedWrite(UserGroup $userGroup): Folder
+    public function addGroupGrantedWrite(UserGroup $userGroup): self
     {
         if (!$this->groups_granted_write->contains($userGroup)) {
             $this->groups_granted_write->add($userGroup);
@@ -498,75 +378,51 @@ class Folder
         return $this;
     }
 
-    /**
-     * @return Folder
-     */
-    public function clearGroupGrantedWrite(): Folder
+    public function clearGroupGrantedWrite(): self
     {
         $this->groups_granted_write->clear();
 
         return $this;
     }
 
-
     /**
      * @return ArrayCollection|UserGroup[]
      */
-    public function getGroupsGrantedWrite()
+    public function getGroupsGrantedWrite(): Collection
     {
         return $this->groups_granted_write;
     }
 
     /**
      * @param ArrayCollection|UserGroup[] $groups_granted_write
-     *
-     * @return $this
      */
-    public function setGroupsGrantedWrite($groups_granted_write)
+    public function setGroupsGrantedWrite($groups_granted_write): self
     {
         $this->groups_granted_write = $groups_granted_write;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function getRedirectTo(): ?string
     {
         return $this->redirect_to;
     }
 
-    /**
-     * @param string $redirect_to
-     *
-     * @return $this
-     */
-    public function setRedirectTo(?string $redirect_to)
+    public function setRedirectTo(?string $redirect_to): self
     {
         $this->redirect_to = $redirect_to;
 
         return $this;
     }
 
-    /**
-     * @param array $permissions_cache
-     *
-     * @return $this
-     */
-    public function setPermissionsCache($permissions_cache)
+    public function setPermissionsCache(array $permissions_cache): self
     {
         $this->permissions_cache = $permissions_cache;
 
         return $this;
     }
 
-    /**
-     * @param string|null $permission
-     *
-     * @return array
-     */
-    public function getPermissionsCache(string $permission = null): array
+    public function getPermissionsCache(?string $permission = null): array
     {
         if (!empty($permission)) {
             if (isset($this->permissions_cache[$permission])) {

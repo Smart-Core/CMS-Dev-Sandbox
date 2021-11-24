@@ -3,13 +3,13 @@
 namespace SmartCore\Bundle\SettingsBundle\Model;
 
 use Doctrine\ORM\Mapping as ORM;
-use Smart\RadBundle\Doctrine\ColumnTrait;
+use SmartCore\RadBundle\Doctrine\ColumnTrait;
 
 class SettingHistoryModel
 {
     use ColumnTrait\Id;
     use ColumnTrait\CreatedAt;
-    use ColumnTrait\FosUser;
+    use ColumnTrait\UserId;
 
     /**
      * @var bool

@@ -2,7 +2,7 @@
 
 namespace SmartCore\Module\Menu\Form\Type;
 
-use Smart\CoreBundle\Form\TypeResolverTtait;
+use SmartCore\RadBundle\\Form\TypeResolverTtait;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;

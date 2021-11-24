@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartCore\CMSBundle\EntitySite;
+namespace SmartCore\CMSBundle\EntityCms;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="cms_domains")
+ * @ORM\Table(name="domains")
  *
  * @UniqueEntity(fields="name", message="Данный домен занят")
  */
@@ -28,7 +28,6 @@ class Domain
      * For Aliases
      *
      * @ORM\ManyToOne(targetEntity="Domain", inversedBy="children")
-     * @ORM\JoinColumn(name="parent_pid")
      */
     protected ?Domain $parent;
 

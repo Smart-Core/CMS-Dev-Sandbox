@@ -2,7 +2,7 @@
 
 namespace SmartCore\Bundle\SettingsBundle\Form\Type;
 
-use Smart\RadBundle\Form\DataTransformer\BooleanToStringTransformer;
+use SmartCore\RadBundle\Form\DataTransformer\BooleanToStringTransformer;
 use SmartCore\Bundle\SettingsBundle\Entity\Setting;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;

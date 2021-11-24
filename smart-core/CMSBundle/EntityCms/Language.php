@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartCore\CMSBundle\EntitySite;
+namespace SmartCore\CMSBundle\EntityCms;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="cms_languages",
+ * @ORM\Table(name="languages",
  *      indexes={
  *          @ORM\Index(columns={"is_enabled"})
  *      }
@@ -34,7 +34,7 @@ class Language
     protected string $code;
 
     /**
-     * @var Domain[]
+     * @var Domain[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="Domain", mappedBy="language")
      */

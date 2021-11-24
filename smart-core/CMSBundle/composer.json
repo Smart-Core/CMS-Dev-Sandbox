@@ -3,12 +3,12 @@
     "description": "Base Bundle of Smart Core CMS.",
     "keywords": ["cmf", "cms", "bundle", "symfony"],
     "type": "symfony-bundle",
-    "homepage": "http://smart-core.org",
+    "homepage": "https://smart-core.org",
     "authors": [
         {
             "name": "Artem Ryzhkov",
             "email": "artem@smart-core.org",
-            "homepage": "http://smart-core.org"
+            "homepage": "https://smart-core.org"
         }
     ],
     "require": {
@@ -26,6 +26,8 @@
 
         "smart-core/rad-bundle": "dev-master",
 
+        "scienta/doctrine-json-functions": "~4.4",
+        "sylius/theme-bundle": "^2.2",
         "sensio/framework-extra-bundle": "^6.2",
         "symfony/asset": "5.3.*",
         "symfony/framework-bundle": "5.3.*",

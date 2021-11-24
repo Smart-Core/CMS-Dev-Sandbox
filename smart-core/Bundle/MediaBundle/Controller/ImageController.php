@@ -2,14 +2,15 @@
 
 namespace SmartCore\Bundle\MediaBundle\Controller;
 
-use Smart\RadBundle\Controller\Controller;
+//use SmartCore\RadBundle\Controller\Controller;
 use SmartCore\Bundle\MediaBundle\Entity\File;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ImageController extends Controller
+class ImageController extends AbstractController
 {
     /**
      * @param Request $request

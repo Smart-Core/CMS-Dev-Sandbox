@@ -2,20 +2,21 @@
 
 namespace SmartCore\Bundle\SettingsBundle\Controller;
 
-use Smart\RadBundle\Controller\Controller;
-use Smart\RadBundle\Form\DataTransformer\ArrayToStringTransformer;
-use Smart\RadBundle\Form\DataTransformer\BooleanToStringTransformer;
-use Smart\RadBundle\Form\DataTransformer\HtmlTransformer;
+//use SmartCore\RadBundle\Controller\Controller;
+use SmartCore\RadBundle\Form\DataTransformer\ArrayToStringTransformer;
+use SmartCore\RadBundle\Form\DataTransformer\BooleanToStringTransformer;
+use SmartCore\RadBundle\Form\DataTransformer\HtmlTransformer;
 use SmartCore\Bundle\SettingsBundle\Manager\SettingsManager;
 use SmartCore\Bundle\SettingsBundle\Model\SettingModel;
 use SmartCore\Bundle\SettingsBundle\Model\SettingPersonalModel;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\HttpFoundation\Request;
 
-class SettingsController extends Controller
+class SettingsController extends AbstractController
 {
     /**
      * @param bool $personal

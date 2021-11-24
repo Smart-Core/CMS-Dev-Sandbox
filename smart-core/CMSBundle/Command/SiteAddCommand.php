@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Command;
 
-use SmartCore\CMSBundle\SiteHandler;
+use SmartCore\CMSBundle\Manager\SiteManager;
 use SmartCore\RadBundle\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -16,7 +16,7 @@ class SiteAddCommand extends AbstractCommand
     protected static $defaultName = 'cms:site:add';
 
     public function __construct(
-        private SiteHandler $siteHandler,
+        private SiteManager $siteManager,
     ) {
         parent::__construct();
     }
@@ -76,9 +76,9 @@ class SiteAddCommand extends AbstractCommand
         $name  = $input->getArgument('name');
         $theme = $input->getArgument('theme');
 
-        $this->siteHandler->add($name, $theme);
+        $this->siteManager->add($name, $theme);
 
-        //dump($this->siteHandler->add());
+        //dump($this->siteManager->add());
 
         return self::SUCCESS;
     }

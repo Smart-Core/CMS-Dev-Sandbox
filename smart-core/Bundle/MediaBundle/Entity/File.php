@@ -3,7 +3,7 @@
 namespace SmartCore\Bundle\MediaBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Smart\RadBundle\Doctrine\ColumnTrait;
+use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
@@ -20,7 +20,7 @@ class File
     use ColumnTrait\Id;
     use ColumnTrait\CreatedAt;
     use ColumnTrait\Description;
-    use ColumnTrait\FosUser;
+    use ColumnTrait\UserId;
 
     /**
      * @var bool

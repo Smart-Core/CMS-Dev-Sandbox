@@ -48,8 +48,8 @@ class CMSBundle extends Bundle
                 'CMSBundle' => [
                     'is_bundle' => true,
                     'type' => 'annotation',
-                    'dir' => 'EntityStructure',
-                    'prefix' => 'SmartCore\CMSBundle\EntityStructure',
+                    'dir' => 'Entity',
+                    'prefix' => 'SmartCore\CMSBundle\Entity',
                     'alias' => 'site_1'
                 ],
             ],
@@ -60,7 +60,7 @@ class CMSBundle extends Bundle
 
         try {
             $db = new \PDO('sqlite:'.$projectDir.'/cms/db/cms.sqlite');
-            $st = $db->query('SELECT * FROM cms_sites');
+            $st = $db->query('SELECT * FROM sites');
             $results = $st->fetchAll();
 
             //dump($results);

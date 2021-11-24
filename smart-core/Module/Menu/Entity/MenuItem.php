@@ -4,7 +4,7 @@ namespace SmartCore\Module\Menu\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Smart\CoreBundle\Doctrine\ColumnTrait;
+use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use SmartCore\Bundle\CMSBundle\Entity\Folder;
 
 /**
@@ -21,7 +21,7 @@ class MenuItem
     use ColumnTrait\Description;
     use ColumnTrait\Position;
     use ColumnTrait\Title;
-    use ColumnTrait\FosUser;
+    use ColumnTrait\UserId;
 
     /**
      * @var MenuItem

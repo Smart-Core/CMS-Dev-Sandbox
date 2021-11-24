@@ -4,7 +4,7 @@ namespace SmartCore\Module\Menu\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
-use Smart\CoreBundle\Doctrine\ColumnTrait;
+use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -17,7 +17,7 @@ class Menu
     use ColumnTrait\CreatedAt;
     use ColumnTrait\Description;
     use ColumnTrait\Position;
-    use ColumnTrait\FosUser;
+    use ColumnTrait\UserId;
 
     /**
      * @var MenuItem[]|ArrayCollection

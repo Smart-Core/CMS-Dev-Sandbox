@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartCore\CMSBundle\EntitySite;
+namespace SmartCore\CMSBundle\EntityCms;
 
 use Doctrine\ORM\Mapping as ORM;
 use SmartCore\RadBundle\Doctrine\ColumnTrait;
@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity()
- * @ORM\Table(name="cms_sites")
+ * @ORM\Table(name="sites")
  *
  * @UniqueEntity(fields={"name"}, message="Сайт с таким именем уже существует.")
  */
@@ -38,8 +38,8 @@ class Site
     protected ?Domain $domain;
 
     /**
-     * ORM\ManyToOne(targetEntity="Language")
-     * ORM\JoinColumn(nullable=true)
+     * @ORM\ManyToOne(targetEntity="Language")
+     * @ORM\JoinColumn(nullable=true)
      */
     protected ?Language $language;
 

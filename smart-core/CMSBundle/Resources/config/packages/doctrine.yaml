@@ -1,11 +1,16 @@
 doctrine:
     dbal:
+        types:
+            sqlite_json: SmartCore\CMSBundle\Doctrine\Sqlite\JsonType
         connections:
             cms:
                 url: 'sqlite:///%kernel.project_dir%/cms/db/cms.sqlite'
                 driver: pdo_sqlite
                 charset: utf8
-#            site_1:
+                mapping_types:
+                    json: sqlite_json
+    
+    #            site_1:
 #                url: 'sqlite:///%kernel.project_dir%/cms/db/site_1.sqlite'
 #                driver: pdo_sqlite
 #                charset: utf8
@@ -25,9 +30,27 @@ doctrine:
                     CMSBundle:
                         is_bundle: true
                         type: annotation
-                        dir: 'EntitySite'
-                        prefix: 'SmartCore\CMSBundle\EntitySite'
+                        dir: 'EntityCms'
+                        prefix: 'SmartCore\CMSBundle\EntityCms'
                         alias: CMS
+                dql:
+                    string_functions:
+                        JSON: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\Json
+                        JSON_ARRAY: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonArray
+                        JSON_ARRAY_LENGTH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonArrayLength
+                        JSON_EXTRACT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonExtract
+                        JSON_INSERT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonInsert
+                        JSON_OBJECT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonObject
+                        JSON_PATCH: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonPatch
+                        JSON_QUOTE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonQuote
+                        JSON_REMOVE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonRemove
+                        JSON_REPLACE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonReplace
+                        JSON_SET: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonSet
+                        JSON_TYPE: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonType
+                        JSON_VALID: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonValid
+                        JSON_GROUP_ARRAY: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonGroupArray
+                        JSON_GROUP_OBJECT: Scienta\DoctrineJsonFunctions\Query\AST\Functions\Sqlite\JsonGroupObject
+
 #            site_1:
 #                connection: site_1
 #                naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
@@ -35,8 +58,8 @@ doctrine:
 #                    CMSBundle:
 #                        is_bundle: true
 #                        type: annotation
-#                        dir: 'EntityStructure'
-#                        prefix: 'SmartCore\CMSBundle\EntityStructure'
+#                        dir: 'Entity'
+#                        prefix: 'SmartCore\CMSBundle\Entity'
 #                        alias: Site1
 #            site_2:
 #                connection: site_2
@@ -45,6 +68,6 @@ doctrine:
 #                    CMSBundle:
 #                        is_bundle: true
 #                        type: annotation
-#                        dir: 'EntityStructure'
-#                        prefix: 'SmartCore\CMSBundle\EntityStructure'
+#                        dir: 'Entity'
+#                        prefix: 'SmartCore\CMSBundle\Entity'
 #                        alias: Site2

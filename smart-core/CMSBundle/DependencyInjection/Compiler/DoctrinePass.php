@@ -33,8 +33,8 @@ class DoctrinePass implements CompilerPassInterface
                 'CMSBundle' => [
                     'is_bundle' => true,
                     'type' => 'annotation',
-                    'dir' => 'EntitySite',
-                    'prefix' => 'SmartCore\CMSBundle\EntitySite',
+                    'dir' => 'EntityCms',
+                    'prefix' => 'SmartCore\CMSBundle\EntityCms',
                     'alias' => 'CMS'
                 ],
             ],

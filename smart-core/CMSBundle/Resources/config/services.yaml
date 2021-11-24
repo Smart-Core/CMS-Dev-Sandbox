@@ -11,7 +11,7 @@ services:
 
     SmartCore\CMSBundle\:
         resource: '../../*'
-        exclude: '../../{DependencyInjection,Entity,EntityStructure,Resources,Tests,CMSBundle.php}'
+        exclude: '../../{DependencyInjection,Entity,Entity,Resources,Tests,CMSBundle.php}'
 
     SmartCore\CMSBundle\Controller\:
         resource: '../../Controller'
