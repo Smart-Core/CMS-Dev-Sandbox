@@ -126,6 +126,9 @@
             "./config/packages/ramsey_uuid_doctrine.yaml"
         ]
     },
+    "roave/security-advisories": {
+        "version": "dev-latest"
+    },
     "scienta/doctrine-json-functions": {
         "version": "4.4.0"
     },
