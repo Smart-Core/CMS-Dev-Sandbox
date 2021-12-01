@@ -22,13 +22,27 @@ class SiteListCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Список сайтов')
+            ->setDescription('Available sites list')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        dump($this->siteManager->all());
+        $rows = [];
+        foreach ($this->siteManager->all() as $site) {
+            $rows[] = [
+                $site->getId(),
+                $site->getName(),
+                $site->getTheme(),
+                $site->getDomain(),
+                $site->getDefaultLanguage(),
+                $site->isEnabled() ? '+' : '<error>-</error>',
+                $site->getCreatedAt()->format('Y-m-d H:i'),
+            ];
+        }
+
+        $this->io->table(['ID', 'Name', 'Theme', 'Domain', 'Default Language', 'Enabled', 'Created At'], $rows);
+
 
         return self::SUCCESS;
     }

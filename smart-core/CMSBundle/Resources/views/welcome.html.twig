@@ -2,12 +2,12 @@
 
 {% block title %}Welcome to Smart Core CMS{% endblock %}
 
-{% set felib = felib_use('bootstrap', '4') %}
-
-{% block styles %}
+{% block stylesheets %}
     {{ parent() }}
-    <style type="text/css">
 
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/bootstrap/css/bootstrap.min.css') }}">
+
+    <style type="text/css">
         body {
             margin-top: 40px;
             margin-bottom: 40px;
@@ -38,7 +38,7 @@
     </style>
 {% endblock %}
 
-{% block content %}
+{% block body %}
     <div class="container">
         <div class="hero-unit">
             <h1>Welcome to Smart Core CMS!</h1>

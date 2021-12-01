@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Manager;
 
+use Doctrine\DBAL\Exception\DriverException;
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
@@ -30,7 +31,7 @@ class SiteManager
         $this->em = $this->doctrine->getManager('cms');
     }
 
-    public function add(string $name, string $theme)
+    public function add(string $name, ?string $theme = null)
     {
         $site = new Site($name);
         $site->setTheme($theme);
@@ -39,6 +40,9 @@ class SiteManager
         $this->em->flush();
     }
 
+    /**
+     * @return Site[]
+     */
     public function all(): array
     {
         $count = 3;
@@ -51,7 +55,7 @@ class SiteManager
             }
 
             return $this->em->getRepository(Site::class)->findAll();
-        } catch (TableNotFoundException $e) {
+        } catch (DriverException|TableNotFoundException $e) {
             $this->schemaUpdate();
 
             goto Begin;

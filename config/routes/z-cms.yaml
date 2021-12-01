@@ -1,0 +1,3 @@
+smart_core_cms:
+    resource: '@CMSBundle/Resources/config/routes.yaml'
+    #prefix: /

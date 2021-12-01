@@ -1,0 +1,52 @@
+{% extends '@CMS/_layout/adminlte.html.twig' %}
+
+{% block page_header 'Edit table schema'|trans %}
+
+{% block content_body %}
+    <h3>{{ table.title }} <small>(Набор данных <a href="{{ path('cms_admin.dataset.show', {'dataset_slug': table.dataset.slug}) }}">{{ table.dataset }}</a>)</small></h3>
+
+    <table class="table table-bordered _table-striped table-hover cms-admin-table">
+        <thead>
+        <tr>
+            <th>Заголовок поля</th>
+            <th>Тип</th>
+            <th>Null</th>
+            <th>Индекс</th>
+            <th>По умолчанию</th>
+            <th>Комментарий</th>
+            <th>Дата создания</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for e in table.fields %}
+            <tr>
+                <td>
+                    <a href="{{ path('cms_admin.dataset.schema', {'id': e.id}) }}">
+                        {{ e.title }}
+                    </a>
+                </td>
+                <td><a href="{{ path('cms_admin.dataset.schema', {'id': e.id}) }}">{{ e.type }}</a></td>
+                <td>{{ e.isNullable ? 'Да' : 'Нет' }}</td>
+                <td>
+                    {% if e.index is null %}
+                        <i>NULL</i>
+                    {% else %}
+                        {{ e.index }}
+                    {% endif %}
+                </td>
+                <td>
+                    {% if e.defaultValue is null %}
+                        <i>NULL</i>
+                    {% else %}
+                        {{ e.defaultValue }}
+                    {% endif %}
+                </td>
+                <td>{{ e.comment }}</td>
+                <td>{{ e.createdAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock content_body %}

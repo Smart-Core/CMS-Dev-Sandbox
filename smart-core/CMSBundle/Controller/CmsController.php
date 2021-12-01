@@ -22,15 +22,14 @@ use Twig\Error\LoaderError;
 
 class CmsController extends AbstractController
 {
-    /**
-     * @Route("/{slug<.+>}", name="cms_main", methods={"GET"})
-     */
+    #[Route('/{slug<.+>}', name: 'cms_main', methods: ['GET'])]
     public function main(
         KernelInterface $kernel,
         Request $request,
         string $slug = '',
-        array $options = null
+        array $options = null,
     ): Response {
+        // @todo
 
         return $this->render('@CMS/welcome.html.twig');
     }

@@ -26,7 +26,6 @@
         "symfony/framework-bundle": "5.4.*",
         "symfony/http-client": "5.4.*",
         "symfony/intl": "5.4.*",
-        "symfony/mailer": "5.4.*",
         "symfony/mime": "5.4.*",
         "symfony/monolog-bundle": "^3.1",
         "symfony/notifier": "5.4.*",
@@ -85,8 +84,10 @@
     },
     "scripts": {
         "auto-scripts": {
-            "cache:clear": "symfony-cmd",
-            "assets:install %PUBLIC_DIR%": "symfony-cmd"
+            "sh bin/clear_cache": "script",
+            "rm -rf public/bundles": "script",
+            "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd",
+            "cms:adminlte:create-symlink": "symfony-cmd"
         },
         "post-install-cmd": [
             "@auto-scripts"

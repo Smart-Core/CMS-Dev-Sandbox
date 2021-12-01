@@ -1,0 +1,7 @@
+
+cms_controllers_admin:
+    resource: 'routing_admin.yml'
+    prefix: /%admin_path%/
+
+cms_controllers_frontend:
+    resource: 'routing_frontend.yml'

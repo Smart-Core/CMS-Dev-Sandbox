@@ -19,6 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class TechCommand extends AbstractCommand
 {
@@ -33,6 +34,7 @@ class TechCommand extends AbstractCommand
 
     public function __construct(
         protected EntityManagerInterface $em,
+        protected KernelInterface $kernel,
         private ManagerRegistry $doctrine,
         private SiteManager $siteManager,
         private ParameterBagInterface $parameterBag,
@@ -44,7 +46,7 @@ class TechCommand extends AbstractCommand
     {
 //        dump($this->siteManager->all());
 
-        $projectDir = $this->parameterBag->get('kernel.project_dir');
+        $projectDir = $this->kernel->getProjectDir();
 
         $db = new \PDO('sqlite:'.$projectDir.'/cms/db/cms.sqlite');
 

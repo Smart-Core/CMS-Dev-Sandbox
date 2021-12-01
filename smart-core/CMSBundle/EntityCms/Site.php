@@ -8,12 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="sites")
- *
- * @UniqueEntity(fields={"name"}, message="Сайт с таким именем уже существует.")
- */
+#[ORM\Entity]
+#[ORM\Table('sites')]
+#[UniqueEntity(fields: ['name'], message: 'This site already exist')]
 class Site
 {
     use ColumnTrait\Id;
@@ -21,27 +18,19 @@ class Site
     use ColumnTrait\NameUnique;
     use ColumnTrait\CreatedAt;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $theme;
 
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
+    #[ORM\Column(type: 'string', nullable: true)]
     protected ?string $web_root;
 
-    /**
-     * ORM\OneToOne(targetEntity="Domain")
-     * ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: Domain::class, fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinColumn(nullable: true)]
     protected ?Domain $domain;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Language")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    protected ?Language $language;
+    #[ORM\ManyToOne(targetEntity: Language::class, fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinColumn(nullable: true)]
+    protected ?Language $default_language = null;
 
     public function __construct(?string $name = null)
     {
@@ -90,14 +79,14 @@ class Site
         return $this;
     }
 
-    public function getLanguage(): ?Language
+    public function getDefaultLanguage(): ?Language
     {
-        return $this->language;
+        return $this->default_language;
     }
 
-    public function setLanguage(?Language $language): self
+    public function setDefaultLanguage(?Language $default_language): self
     {
-        $this->language = $language;
+        $this->default_language = $default_language;
 
         return $this;
     }

@@ -1,153 +1,32 @@
-{% extends '@Html/base.html.twig' %}
+<!DOCTYPE html>
+<html lang="{{ app.request.locale }}">
+<head>
+    <meta charset="UTF-8">
+    <title>
+        {% block title %}Welcome!{% endblock %}
+    </title>
 
-{% set use_libs = {
-    'bootstrap': '4',
-    'font-awesome': 5,
-    'pnotify': null,
-} %}
+    {% block meta -%}
+        <meta charset="utf-8">
+        <meta http-equiv= "X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+        {#<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
 
-{% block title -%}
-    {{ 'Control panel'|trans }} / Smart Core CMS
-{%- endblock %}
+        <link rel="shortcut icon" href="{{ asset('bundles/cms/assets/favicon.ico') }}" type="image/x-icon">
+    {% endblock %}
 
-{% block meta -%}
-    {{ parent() }}
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-{#    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">#}
-{% endblock %}
+    {# Run `composer require symfony/webpack-encore-bundle`
+       and uncomment the following Encore helpers to start using Symfony UX
+    #}
+    {% block stylesheets %}
+        {#{{ encore_entry_link_tags('app') }}#}
+    {% endblock %}
 
-{% block styles -%}
-    {{ parent() }}
-
-    <style type="text/css">
-        html {
-            font-size: 15px !important;
-        }
-        .navbar-dark .nav-item .nav-link {
-            color: darkgray;
-        }
-        .navbar-dark .nav-item .nav-link:hover {
-            color: whitesmoke;
-        }
-        .nav-pills .nav-link.active,
-        .nav-pills .show > .nav-link {
-            background-color: #848586 !important;
-        }
-        .dropdown-item:hover {
-            color: black;
-            background-color: lightgray;
-        }
-        @media (min-width: 576px) {
-            .form-group label,
-            .form-group legend {
-                text-align: left;
-            }
-        }
-        @media (min-width: 768px) {
-            .form-group label,
-            .form-group legend{
-                text-align: right;
-            }
-        }
-        .clear {
-            clear: both;
-        }
-        .form-group label.col-form-label,
-        .form-group legend.col-form-label{
-            font-weight: bold;
-        }
-        .form-group label.col-form-label .invalid-feedback {
-            display: none !important;
-        }
-        .form-group label.required:after {
-            content: ' *';
-            color: red;
-        }
-        .form-control option[selected=selected] {
-            color: blue;
-            font-weight: bold;
-        }
-        .custom-file-input{
-            padding: 4px;
-            opacity: 1;
-            background-color: white;
-        }
-        .custom-file-label {
-            display: none;
-        }
-        .nav .nav-item .nav-link:hover {
-            /*background-color: #e8e9ea;*/
-        }
-        .myform {
-            background-color: #e8e9ea;
-            padding: 15px 15px 1px 10px;
-        }
-        .card-text {
-            margin-bottom: 7px;
-        }
-        .visible {
-            display: block;
-            opacity: 1;
-        }
-        #mapdiv {
-            height: 500px;
-            width: 100%;
-        }
-    </style>
-
-{% endblock %}
-
-{% block scripts -%}
-    {{ parent() }}
-    {# Чтобы стили применялись до загрузки страницы в Firefox #}
-    <script src="{{ asset('bundles/cms/assets/jquery-3.4.1.min.js') }}"></script>
-
-{%- endblock %}
-
-{% block body_attr %}{{ parent() }} class="bg-light"{% endblock body_attr %}
-
-{% block body %}
-    {% block header %}
-    {% endblock header %}
-
-    <content role="main">
-        <div class="container">
-            {% block content '' %}
-        </div>
-    </content>
-
-    {% block footer %}
-        <footer class="my-5 _pt-5 text-muted text-center text-small">
-            <p class="mb-1">&copy; {{ 'now'|date('Y ')}} Smart Core CMS</p>
-        </footer>
-    {% endblock footer %}
-{% endblock body %}
-
-{% block body_js %}
-    {{ parent() }}
-
-    <script src="{{ asset('bundles/felib/popper.min.js') }}"></script>
-
-    {% include '@CMS/pnotify_flash_messages.html.twig' %}
-
-    <script>
-        $('li.active a').addClass('active');
-        $('li.current a').addClass('active');
-        $('ul.nav li').addClass('nav-item');
-        $('ul.nav li a').addClass('nav-link');
-        $('.container form').addClass('myform');
-        $('.container-fluid form').addClass('myform');
-        $('.nav .nav-item .nav-link').hover(
-          function () {
-            if (!$(this).hasClass('active')){
-              $(this).css('background-color', '#e8e9ea');
-            }
-          },
-          function () {
-            if (!$(this).hasClass('active')) {
-              $(this).css('background-color', 'transparent');
-            }
-          }
-        );
-    </script>
-{% endblock %}
+    {% block javascripts %}
+        {#{{ encore_entry_script_tags('app') }}#}
+    {% endblock %}
+</head>
+<body {% block body_attr '' %}>
+    {% block body %}{% endblock %}
+</body>
+</html>

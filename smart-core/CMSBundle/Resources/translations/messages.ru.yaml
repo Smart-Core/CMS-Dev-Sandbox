@@ -269,3 +269,8 @@ Yes: Да
 web/: web/
 Web root: Веб корень
 Width: Ширина
+
+cms:
+    admin:
+        login:
+            title: Вход в систему

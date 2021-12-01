@@ -24,33 +24,17 @@ class SecurityManager
 {
     use ContainerAwareTrait;
 
-    /** @var \Doctrine\ORM\EntityManager $em */
-    protected $em;
-
     /** @var array  */
     protected $usersPermissionsCache = [];
 
     /** @var array  */
-    protected $usersGroupsCache      = [];
+    protected $usersGroupsCache = [];
 
-    /** @var AuthorizationCheckerInterface */
-    protected $securityAuthorizationChecker;
-
-    /** @var TokenStorageInterface */
-    protected $securityTokenStorage;
-
-    /**
-     * SecurityManager constructor.
-     */
     public function __construct(
-        AuthorizationCheckerInterface $authorizationChecker,
-        TokenStorageInterface $tokenStorage,
-        EntityManagerInterface $em
-    ) {
-        $this->em = $em;
-        $this->securityAuthorizationChecker = $authorizationChecker;
-        $this->securityTokenStorage = $tokenStorage;
-    }
+        private AuthorizationCheckerInterface $securityAuthorizationChecker,
+        private TokenStorageInterface $securityTokenStorage,
+        private EntityManagerInterface $em,
+    ) {}
 
     /**
      * Запрос может быть 3-х видов:
@@ -63,6 +47,10 @@ class SecurityManager
      */
     public function isGranted(string $slug): bool
     {
+        if (!$this->securityTokenStorage->getToken()) {
+            return false;
+        }
+
         /** @var UserModel $user */
         $user = $this->securityTokenStorage->getToken()->getUser();
 
@@ -324,9 +312,6 @@ class SecurityManager
         $this->container->get('cms.cache')->invalidateTags(['node', 'folder', 'region']);
     }
 
-    /**
-     * @param array  $folders
-     */
     public function checkForFoldersRouterData(array $folders, string $permission = 'read'): bool
     {
         if ($this->isSuperAdmin()) {

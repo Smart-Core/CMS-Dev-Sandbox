@@ -10,12 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="domains")
- *
- * @UniqueEntity(fields="name", message="Данный домен занят")
- */
+#[ORM\Entity]
+#[ORM\Table('domains')]
+#[UniqueEntity(fields: ['name'], message: 'This domain already exist')]
 class Domain
 {
     use ColumnTrait\Id;
@@ -24,37 +21,28 @@ class Domain
     use ColumnTrait\IsEnabled;
     use ColumnTrait\CreatedAt;
 
-    /**
-     * For Aliases
-     *
-     * @ORM\ManyToOne(targetEntity="Domain", inversedBy="children")
-     */
-    protected ?Domain $parent;
-
-    /**
-     * @ORM\Column(type="boolean", nullable=false)
-     */
+    // For Aliases
+    #[ORM\Column(type: 'boolean', nullable: false)]
     protected bool $is_redirect;
+
+    #[ORM\Column(type: 'date', nullable: true)]
+    protected ?\DateTimeInterface $paid_till_date;
+
+    // For Aliases
+    #[ORM\ManyToOne(targetEntity: Domain::class, inversedBy: 'children', fetch: 'EXTRA_LAZY')]
+    protected ?Domain $parent;
 
     /**
      * List of aliases
      *
      * @var Domain[]|Collection
-     *
-     * @ORM\OneToMany(targetEntity="Domain", mappedBy="parent")
-     * @ORM\OrderBy({"position" = "ASC", "name" = "ASC"})
      */
+    #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'parent', fetch: 'EXTRA_LAZY')]
+    #[ORM\OrderBy(['position' => 'ASC', 'name' => 'ASC'])]
     protected $children;
 
-    /**
-     * @ORM\Column(type="date", nullable=true)
-     */
-    protected ?\DateTimeInterface $paid_till_date;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="Language", inversedBy="domains")
-     * @ORM\JoinColumn(nullable=true)
-     */
+    #[ORM\ManyToOne(targetEntity: Language::class, inversedBy: 'domains', fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinColumn(nullable: true)]
     protected ?Language $language;
 
     public function __construct(?string $name = null)

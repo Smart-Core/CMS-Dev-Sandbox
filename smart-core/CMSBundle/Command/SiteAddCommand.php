@@ -24,9 +24,9 @@ class SiteAddCommand extends AbstractCommand
     protected function configure(): void
     {
         $this
-            ->setDescription('Добавить новый сайт')
-            ->addArgument('name', InputArgument::REQUIRED, 'Название')
-            ->addArgument('theme', InputArgument::OPTIONAL, 'Тема оформления')
+            ->setDescription('Add new site to CMS')
+            ->addArgument('name', InputArgument::REQUIRED, 'Name')
+            ->addArgument('theme', InputArgument::OPTIONAL, 'Theme')
         ;
     }
 
@@ -77,8 +77,6 @@ class SiteAddCommand extends AbstractCommand
         $theme = $input->getArgument('theme');
 
         $this->siteManager->add($name, $theme);
-
-        //dump($this->siteManager->add());
 
         return self::SUCCESS;
     }

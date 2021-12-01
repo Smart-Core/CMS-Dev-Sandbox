@@ -9,18 +9,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="languages",
- *      indexes={
- *          @ORM\Index(columns={"is_enabled"})
- *      }
- * )
- *
- * @UniqueEntity(fields={"name"}, message="Язык с таким именем уже существует.")
- * @UniqueEntity(fields={"code"}, message="Язык с таким кодом уже существует.")
- */
+#[ORM\Entity]
+#[ORM\Table('languages')]
+#[ORM\Index(columns: ['is_enabled'])]
+#[UniqueEntity(fields: ['name'], message: 'Language with this name already exist')]
+#[UniqueEntity(fields: ['code'], message: 'Language with this code already exist')]
 class Language
 {
     use ColumnTrait\Id;
@@ -28,16 +23,15 @@ class Language
     use ColumnTrait\NameUnique;
     use ColumnTrait\CreatedAt;
 
-    /**
-     * @ORM\Column(type="string", unique=true, length=12)
-     */
+    #[ORM\Column(type: 'string', length: 12, unique: true)]
+    #[Assert\Length(min: 2, max: 12)]
+    #[Assert\NotBlank]
     protected string $code;
 
     /**
      * @var Domain[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Domain", mappedBy="language")
      */
+    #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'language', fetch: 'EXTRA_LAZY')]
     protected Collection $domains;
 
     public function __construct()

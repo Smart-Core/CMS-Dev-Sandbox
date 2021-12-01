@@ -1,0 +1,48 @@
+{% extends '@CMS/_layout/adminlte.html.twig' %}
+
+{% block page_header %}
+    {{ dataset }}
+{% endblock page_header %}
+{% block page_description 'Dataset'|trans %}
+
+{% block content_body %}
+
+    {% set menu = knp_menu_get('cms_admin_dataset', [], {
+        'dataset': dataset,
+    }) %}
+
+    {{ knp_menu_render(menu, {
+        'clear_matcher': false,
+    })}}
+
+    <table class="table table-bordered _table-striped table-hover cms-admin-table">
+        <thead>
+        <tr>
+            <th>Заголовок</th>
+            <th>Имя</th>
+            <th>Имя класса</th>
+            <th>Описание</th>
+            <th>Дата создания</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for e in dataset.tables %}
+            <tr>
+                <td><a href="{{ path('cms_admin.dataset.schema', {'id': e.id}) }}">
+                        {{ e.title }}
+                    </a>
+                </td>
+                <td><a href="{{ path('cms_admin.dataset.schema', {'id': e.id}) }}">{{ e.name }}</a></td>
+                <td>App/Entity/{{ dataset.slug }}/{{ e.className }}</td>
+                <td>{{ e.description }}</td>
+                <td>{{ e.createdAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <h4>Добавить таблицу</h4>
+
+    {{ form(form) }}
+
+{% endblock content_body %}

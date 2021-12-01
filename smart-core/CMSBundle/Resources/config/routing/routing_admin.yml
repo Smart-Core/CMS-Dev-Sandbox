@@ -1,0 +1,13 @@
+
+cms_controllers_admin:
+    resource: '../../../Controller/Admin/'
+    type: annotation
+    #name_prefix: cms_admin.
+
+#admin_settings:
+#    resource: '@SmartSettingsBundle/Resources/config/routing.yml'
+#    prefix: /config/
+
+#module_admin_routes_annotation:
+#    resource: .
+#    type: module_admin_annotation

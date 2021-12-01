@@ -1,0 +1,17 @@
+{% extends '@CMS/_layout/adminlte.html.twig' %}
+
+{% block page_header 'Edit dataset'|trans %}
+
+{% block content_body %}
+
+    {% set menu = knp_menu_get('cms_admin_dataset', [], {
+        'dataset': dataset,
+    }) %}
+
+    {{ knp_menu_render(menu, {
+        'clear_matcher': false,
+    })}}
+
+    {{ form(form) }}
+
+{% endblock content_body %}

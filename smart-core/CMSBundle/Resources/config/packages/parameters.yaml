@@ -1,0 +1,5 @@
+parameters:
+    cms_admin_path_default: admin
+    cms.admin_path: '%env(default:cms_admin_path_default:CMS_ADMIN_PATH)%'
+    cms.admin_role: ROLE_ADMIN
+    cms.api_path: api

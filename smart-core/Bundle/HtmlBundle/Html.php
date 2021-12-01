@@ -111,7 +111,7 @@ class Html
      */
     public function isHtml5()
     {
-        return ($this->doctype == 'html5') ? true : false;
+        return ($this->doctype === 'html5') ? true : false;
     }
 
     /**
@@ -288,7 +288,7 @@ class Html
         }
 
         $tmp = parse_url($input);
-        if (substr($tmp['path'], -3) == '.js') {
+        if (substr($tmp['path'], -3) === '.js') {
             $data['src'] = $input;
         } else {
             $data['_code'] = $input;
@@ -321,9 +321,9 @@ class Html
         }
 
         $tmp = parse_url($input);
-        if (substr($tmp['path'], -4) == '.css') {
+        if (substr($tmp['path'], -4) === '.css') {
             $data['href'] = $input;
-        } elseif (substr($tmp['path'], -5) == '.less') {
+        } elseif (substr($tmp['path'], -5) === '.less') {
             $this->addLink($input, [
                 'rel'   => 'stylesheet/less',
                 'type'  => 'text/css',

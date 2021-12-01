@@ -1,0 +1,36 @@
+{% extends '@CMS/_layout/adminlte.html.twig' %}
+
+{% block page_header 'Datasets'|trans %}
+
+{% block content_body %}
+    <a href="{{ path('cms_admin.dataset.create') }}" class="btn btn-primary"><i class="fas fa-folder-plus"></i>&nbsp;&nbsp;&nbsp;Создать набор данных</a>
+
+    <table class="table table-bordered _table-striped table-hover cms-admin-table">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Машинное имя</th>
+            <th>Описание</th>
+            <th>Таблиц</th>
+            <th>Дата создания</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for e in datasets %}
+            <tr>
+                <td>
+                    <a href="{{ path('cms_admin.dataset.show', {'dataset_slug': e.slug}) }}">
+                        <i class="{{ e.icon }}"></i>
+                        {{ e.name }}
+                    </a>
+                </td>
+                <td><a href="{{ path('cms_admin.dataset.show', {'dataset_slug': e.slug}) }}">{{ e.slug }}</a></td>
+                <td>{{ e.description }}</td>
+                <td>{{ e.tables|length }}</td>
+                <td>{{ e.createdAt|date('Y-m-d H:i:s') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock content_body %}

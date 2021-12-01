@@ -1,0 +1,9 @@
+
+cms_controllers:
+    resource: '../../../Controller/*'
+    type: annotation
+
+# Эти маршруты нужны для генерации ссылок к модулям с учетом пути, куда они подключены.
+#cms_modules:
+#    resource: .
+#    type: modules_annotation

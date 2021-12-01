@@ -29,7 +29,7 @@ doctrine:
                 mappings:
                     CMSBundle:
                         is_bundle: true
-                        type: annotation
+                        type: attribute # annotation
                         dir: 'EntityCms'
                         prefix: 'SmartCore\CMSBundle\EntityCms'
                         alias: CMS

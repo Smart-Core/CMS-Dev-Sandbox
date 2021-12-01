@@ -1,0 +1,7 @@
+smart_core_cms_admin:
+    resource: '@CMSBundle/Resources/config/routing/routing_admin.yml'
+    prefix: /%cms.admin_path%/
+
+smart_core_cms_frontend:
+    resource: '@CMSBundle/Resources/config/routing/routing_frontend.yml'
+    prefix: /
