@@ -26,6 +26,7 @@
 
         "smart-core/rad-bundle": "dev-master",
 
+        "knplabs/knp-menu-bundle": "^3.2",
         "scienta/doctrine-json-functions": "~4.4",
         "sylius/theme-bundle": "^2.2",
         "sensio/framework-extra-bundle": "^6.2",

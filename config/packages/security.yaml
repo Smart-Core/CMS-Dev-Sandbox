@@ -1,18 +1,42 @@
 security:
     enable_authenticator_manager: true
+
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
+
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         users_in_memory: { memory: null }
+        database_users:
+            entity: { class: App\Entity\User, property: username_canonical }
+
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
+
+        cms_admin:
+            context: cms
+            pattern: ^/%cms.admin_path%
+            provider: database_users
+            form_login:
+                check_path: /%cms.admin_path%/
+                login_path: /%cms.admin_path%/
+                default_target_path: /%cms.admin_path%/
+            logout:
+                path: /%cms.admin_path%/logout
+            remember_me:
+                secret: "%env(APP_SECRET)%"
+                name: REMEMBER_ME
+                lifetime: 31536000 # 365 days in seconds
+                path: /
+                domain: ~
+
         main:
+            context: cms
             lazy: true
-            provider: users_in_memory
+            provider: database_users
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -20,8 +44,14 @@ security:
             # https://symfony.com/doc/current/security/impersonating_user.html
             # switch_user: true
 
+    role_hierarchy:
+        ROLE_SUPER_ADMIN: ROLE_ADMIN
+        ROLE_ADMIN: ROLE_USER
+
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        - { path: ^/%cms.admin_path%/$, allow_if: '!is_authenticated() or is_fully_authenticated()' } }
+        - { path: ^/%cms.admin_path%, roles: ROLE_ADMIN }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }

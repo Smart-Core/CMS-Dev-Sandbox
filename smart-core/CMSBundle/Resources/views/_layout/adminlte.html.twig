@@ -1,0 +1,256 @@
+{% extends '@CMS/base.html.twig' %}
+
+{% block title -%}
+    {{ 'Control panel'|trans }} / Smart Core CMS
+{%- endblock %}
+
+{% block stylesheets -%}
+    {{ parent() }}
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/bootstrap/css/bootstrap.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/pnotify/pnotify.custom.min.css') }}">
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/adminlte/plugins/fontawesome-free/css/all.min.css') }}">
+
+    {#    <!-- Ionicons -->#}
+{#    <link rel="stylesheet" href="{{ asset('bundles/felib/ionicons/2.0.1/css/ionicons.min.css') }}">#}
+    <!-- Tempusdominus Bbootstrap 4 -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/adminlte/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/adminlte/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/adminlte/plugins/jqvmap/jqvmap.min.css') }}">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/adminlte/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
+    <!-- summernote -->
+    <link rel="stylesheet" href="{{ asset('bundles/cms/assets/adminlte/plugins/summernote/summernote-bs4.css') }}">
+    <!-- Google Font: Source Sans Pro -->
+{#    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">#}
+
+    {% if app.debug -%}
+        <link href="{{ asset('bundles/cms/assets/adminlte/dist/css/adminlte.css') }}" rel="stylesheet" type="text/css" />
+    {% else -%}
+        <link href="{{ asset('bundles/cms/assets/adminlte/dist/css/adminlte.min.css') }}" rel="stylesheet" type="text/css" />
+    {%- endif %}
+
+    <link href="{{ asset('bundles/cms/assets/adminlte_custom.css') }}" rel="stylesheet" type="text/css" />
+
+    <style type="text/css">
+        .cms-admin-table {
+            background-color: #f5f6f7;
+        }
+        .cms-admin-table th {
+            background-color: #e9eaeb;
+        }
+        td {
+            padding: 8px !important;
+        }
+    </style>
+{% endblock %}
+
+{% block javascripts -%}
+    {{ parent() }}
+    {# Чтобы стили применялись до загрузки страницы в Firefox #}
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/jquery/jquery.min.js') }}"></script>
+{%- endblock %}
+
+{% block body_js %}
+    {{ parent() }}
+
+    <!-- jQuery UI 1.12.1 -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+
+    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+    <script>
+      $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <!-- Bootstrap 4 -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- ChartJS -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/chart.js/Chart.min.js') }}"></script>
+    <!-- Sparkline -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/sparklines/sparkline.js') }}"></script>
+    <!-- JQVMap -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
+    <!-- daterangepicker -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
+    <!-- Summernote -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <!-- overlayScrollbars -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    <!-- AdminLTE App -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/dist/js/adminlte.js') }}"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="{{ asset('bundles/cms/assets/adminlte/dist/js/pages/dashboard.js') }}"></script>
+    <!-- AdminLTE for demo purposes -->
+{#    <script src="{{ asset('bundles/cms/assets/adminlte/dist/js/demo.js') }}"></script>#}
+
+    {% include '@SmartCoreRad/flash_messages/pnotify.html.twig' %}
+
+    <script>
+      $('li.active a').addClass('active');
+      $('li.current a').addClass('active');
+      $('ul.nav li').addClass('nav-item');
+      $('ul.nav li a').addClass('nav-link');
+      $('.container form').addClass('cms_form');
+      $('.container-fluid form').addClass('cms_form');
+
+      $('.cms-nav .nav-item .nav-link').hover(
+        function () {
+          if (!$(this).hasClass('active')){
+            $(this).css('background-color', '#d3d4d5');
+          }
+        },
+        function () {
+          if (!$(this).hasClass('active')) {
+            $(this).css('background-color', 'transparent');
+          }
+        }
+      );
+
+    </script>
+
+{% endblock body_js %}
+
+{% if form is defined %}
+    {% form_theme form '@CMS/Form/horizontal_layout.html.twig' %}
+{% endif %}
+
+{% block body_attr %}
+    {{ parent() }}
+    class="hold-transition dark-mode sidebar-mini layout-fixed layout-navbar-fixed text-sm"
+{% endblock body_attr %}
+
+{% block body %}
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-dark _navbar-secondary _navbar-fixed-top">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
+                </li>
+                {#
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="#index3.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="#" class="nav-link">Contact</a>
+                </li>
+                #}
+            </ul>
+
+            <!-- SEARCH FORM -->
+{#            {% include '@CMS/_layout/_search_form.html.twig' %}#}
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a href="{{ app.request.baseUrl }}/" class="nav-link" title="Перейти на сайт"><i class="fa fa-home"></i> На сайт</a>
+                </li>
+
+                <!-- Messages Dropdown Menu -->
+{#                {% include '@CMS/_layout/_messages_dropdown.html.twig' %}#}
+
+                <!-- Notifications Dropdown Menu -->
+{#                {% include '@CMS/_layout/_notifications_dropdown.html.twig' %}#}
+
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="{{ path('cms_admin.logout') }}" class="nav-link">Выход</a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+
+            <!-- Brand Logo -->
+            <a href="{{ path('cms_admin.index') }}" class="brand-link">
+                <img src="{{ asset('bundles/cms/assets/adminlte/dist/img/AdminLTELogo.png') }}"
+                     alt="AdminLTE Logo"
+                     class="brand-image img-circle elevation-3"
+                     style="opacity: .8">
+                <span class="brand-text _font-weight-light">Smart Core CMS</span>
+            </a>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <!-- Sidebar Menu -->
+                    {{ knp_menu_render('cms_admin_main', {
+                        'clear_matcher': false,
+                        'template': '@CMS/KnpMenu/adminlte_sidebar_menu.html.twig',
+                    })}}
+
+{#                    {% include '@CMS/_adminlte/sidebar_menu.html.twig' %}#}
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0 __text-dark">
+                                {% block page_header '' -%} &nbsp;&nbsp;
+                                <small>{% block page_description '' -%}</small>
+                            </h1>
+                        </div><!-- /.col -->
+
+                        <div class="col-sm-6">
+                            {# @todo breadcrumbs #}
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="{{ path('cms_admin.index') }}">Администрирование</a></li>
+                                <li class="breadcrumb-item active"><a href="{{ app.request.baseUrl }}/">Главная</a></li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    {% block content_body '' -%}
+                </div><!-- /.container-fluid -->
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer text-sm">
+            <strong>Copyright &copy; 2021 <a href="http://smart-core.org">Smart Core CMS</a></strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 5.0-alpha
+            </div>
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+{% endblock body %}

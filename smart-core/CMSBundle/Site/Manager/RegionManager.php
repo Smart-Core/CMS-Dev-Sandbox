@@ -5,31 +5,23 @@ declare(strict_types=1);
 namespace SmartCore\CMSBundle\Site\Manager;
 
 use Doctrine\DBAL\Exception\TableNotFoundException;
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use SmartCore\CMSBundle\EntitySite\Region;
 use SmartCore\CMSBundle\Form\Type\RegionFormType;
+use SmartCore\CMSBundle\Manager\ContextManager;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
 class RegionManager
 {
-    /** @var EntityManager */
-    protected $em;
-
-    /** @var FormFactoryInterface */
-    protected $formFactory;
-
     /** @var \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository */
     protected $repository;
 
-    /** @var ContextManager */
-    protected $cmsContext;
-
-    public function __construct(EntityManager $em, FormFactoryInterface $formFactory, ContextManager $cmsContext)
-    {
-        $this->em = $em;
-        $this->cmsContext  = $cmsContext;
-        $this->formFactory = $formFactory;
+    public function __construct(
+        private ContextManager $context,
+        private EntityManagerInterface $em,
+        private FormFactoryInterface $formFactory,
+    ) {
         $this->repository  = $em->getRepository(Region::class);
 
         $this->checkForDefault();
@@ -40,7 +32,7 @@ class RegionManager
      */
     public function all(): array
     {
-        return $this->repository->findBy(['site' => $this->cmsContext->getSite()], ['position' => 'ASC', 'name' => 'ASC']);
+        return $this->repository->findBy(['site' => $this->context->getSite()], ['position' => 'ASC', 'name' => 'ASC']);
     }
 
     /**
@@ -54,10 +46,10 @@ class RegionManager
     public function checkForDefault(): bool
     {
         try {
-            if (!empty($this->cmsContext->getSite())
-                and empty($this->repository->findOneBy(['name' => 'content', 'site' => $this->cmsContext->getSite()])))
+            if (!empty($this->context->getSite())
+                and empty($this->repository->findOneBy(['name' => 'content', 'site' => $this->context->getSite()])))
             {
-                $this->update(new Region('content', 'Content workspace', $this->cmsContext->getSite(true)));
+                $this->update(new Region('content', 'Content workspace', $this->context->getSite(true)));
 
                 return false;
             }
@@ -76,7 +68,7 @@ class RegionManager
      */
     public function create($name = null, $descr = null): Region
     {
-        return new Region($name, $descr, $this->cmsContext->getSite());
+        return new Region($name, $descr, $this->context->getSite());
     }
 
     /**

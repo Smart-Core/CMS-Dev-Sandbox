@@ -14,7 +14,6 @@ use SmartCore\CMSBundle\Site\Entity\Region;
 use SmartCore\CMSBundle\Entity\UserGroup;
 use SmartCore\CMSBundle\Model\UserModel;
 use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -51,7 +50,7 @@ class SecurityManager
             return false;
         }
 
-        /** @var UserModel $user */
+        /** @var UserInterface $user */
         $user = $this->securityTokenStorage->getToken()->getUser();
 
         if ($user instanceof UserInterface and $this->securityAuthorizationChecker->isGranted('ROLE_SUPER_ADMIN', $user)) {
@@ -66,16 +65,16 @@ class SecurityManager
     }
 
     /**
-     * @param UserModel|string $user
+     * @param UserInterface|string $user
      */
     public function getUserPermissions($user): array
     {
         if ($user instanceof UserInterface) {
-            if (!isset($this->usersPermissionsCache[$user->getId()])) {
-                $this->createPermissionsMapForUser($user);
+            if (!isset($this->usersPermissionsCache[$user->getUserIdentifier()])) {
+                //$this->createPermissionsMapForUser($user);
             }
 
-            return $this->usersPermissionsCache[$user->getId()];
+            //return $this->usersPermissionsCache[$user->getUserIdentifier()];
         }
 
         return [];
@@ -84,7 +83,7 @@ class SecurityManager
     /**
      * @todo !!! кеширование
      */
-    protected function createPermissionsMapForUser(UserModel $user): void
+    protected function createPermissionsMapForUser(UserInterface $user): void
     {
         $permissions = [];
 
@@ -102,7 +101,7 @@ class SecurityManager
             }
         }
 
-        $this->usersPermissionsCache[$user->getId()] = $permissions;
+        $this->usersPermissionsCache[$user->getUserIdentifier()] = $permissions;
     }
 
     /**

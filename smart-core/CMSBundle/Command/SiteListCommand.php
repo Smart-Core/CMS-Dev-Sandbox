@@ -26,7 +26,7 @@ class SiteListCommand extends AbstractCommand
         ;
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $rows = [];
         foreach ($this->siteManager->all() as $site) {

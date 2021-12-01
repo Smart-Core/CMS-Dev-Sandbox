@@ -71,7 +71,7 @@ class SiteAddCommand extends AbstractCommand
         }
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $name  = $input->getArgument('name');
         $theme = $input->getArgument('theme');

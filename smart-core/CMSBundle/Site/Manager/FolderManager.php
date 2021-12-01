@@ -4,34 +4,33 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Site\Manager;
 
+use Doctrine\ORM\EntityManagerInterface;
 use SmartCore\CMSBundle\Cache\CmsCacheProvider;
-use SmartCore\CMSBundle\EntitySite\Folder;
-use SmartCore\CMSBundle\EntitySite\Node;
+use SmartCore\CMSBundle\Site\Entity\Folder;
+use SmartCore\CMSBundle\Site\Entity\Node;
 use SmartCore\CMSBundle\Form\Type\FolderFormType;
+use SmartCore\CMSBundle\Manager\ContextManager;
 use SmartCore\CMSBundle\Repository\FolderRepository;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Form\Form;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class FolderManager
 {
-    use ContainerAwareTrait;
-
-    /** @var \Doctrine\ORM\EntityManager */
-    protected $em;
-
     /** @var FolderRepository|\Doctrine\ORM\EntityRepository  */
     protected $repository;
 
     /** @var CmsCacheProvider|object */
     protected $cache;
 
-    public function __construct(ContainerInterface $container)
-    {
-        $this->container  = $container;
-        $this->cache      = $container->get('cms.cache');
-        $this->em         = $container->get('doctrine.orm.entity_manager');
-        $this->repository = $this->em->getRepository(Folder::class);
+    public function __construct(
+        private ContextManager $context,
+        private EntityManagerInterface $em,
+        private FormFactoryInterface $formFactory,
+        private RequestStack $requestStack,
+    ) {
+        //$this->cache      = $container->get('cms.cache'); // @todo !!!
+        $this->repository = $this->em->getRepository(Folder::class); // @todo !!!
     }
 
     public function create(): Folder
@@ -47,9 +46,9 @@ class FolderManager
      *
      * @return \Symfony\Component\Form\Form
      */
-    public function createForm($data = null, array $options = []): Form
+    public function createForm($data = null, array $options = []): FormInterface
     {
-        return $this->container->get('form.factory')->create(FolderFormType::class, $data, $options);
+        return $this->formFactory->create(FolderFormType::class, $data, $options);
     }
 
     /**
@@ -77,7 +76,7 @@ class FolderManager
     public function getUri($data = null, bool $isBaseUrl = true): string
     {
         if (null === $data) {
-            $folder_id = $this->container->get('cms.context')->getCurrentFolderId();
+            $folder_id = $this->context->getCurrentFolderId();
         } elseif ($data instanceof Node) {
             $folder_id = $data->getFolderId();
         } elseif ($data instanceof Folder) {
@@ -88,7 +87,7 @@ class FolderManager
             throw new \Exception('Unknown input type.');
         }
 
-        $siteId = $this->container->get('cms.context')->getSiteId();
+        $siteId = $this->context->getSiteId();
 
         $cache_key = md5('site_id='.$siteId.'cms_folder.full_path.'.$folder_id);
         if (null === $uri = $this->cache->get($cache_key)) {
@@ -132,18 +131,18 @@ class FolderManager
             $this->cache->set($cache_key, $uri, ['folder']);
         }
 
-        return $isBaseUrl ? $this->container->get('request_stack')->getMasterRequest()->getBaseUrl().$uri : $uri;
+        return $isBaseUrl ? $this->requestStack->getMainRequest()->getBaseUrl().$uri : $uri;
     }
 
     public function checkRelations(Folder $folder): void
     {
-        if (empty($this->container->get('cms.context')->getSite())) {
+        if (empty($this->context->getSite())) {
             return;
         }
 
         $uriPart = $folder->getUriPart();
 
-        $site = $this->container->get('cms.context')->getSite();
+        $site = $this->context->getSite();
 
         if (empty($uriPart)
             and $site->getRootFolder() instanceof Folder
@@ -163,7 +162,7 @@ class FolderManager
         $cnt = 30;
         $ok = false;
         while ($cnt--) {
-            if ($parent->getId() == $this->container->get('cms.context')->getSite()->getRootFolder()->getId()) {
+            if ($parent->getId() == $this->context->getSite()->getRootFolder()->getId()) {
                 $ok = true;
                 break;
             } else {
@@ -174,7 +173,9 @@ class FolderManager
 
         // Если обнаружена циклическая зависимость, тогда родитель выставляется корневая папка.
         if (!$ok) {
-            $folder->setParentFolder($this->container->get('cms.folder')->get($this->container->get('cms.context')->getSite()->getRootFolder()->getId()));
+            $folder->setParentFolder($this->get(
+                $this->context->getSite()->getRootFolder()->getId())
+            );
         }
     }
 
@@ -193,7 +194,7 @@ class FolderManager
         $structure = [];
 
         foreach ($this->findByParent($parent) as $f) {
-            if ($f->getParentFolder() === null and $f->getId() !== $this->container->get('cms.context')->getSite()->getRootFolder()->getId()) {
+            if ($f->getParentFolder() === null and $f->getId() !== $this->context->getSite()->getRootFolder()->getId()) {
                 continue;
             }
 
@@ -274,7 +275,7 @@ class FolderManager
 
         $uriPart = $folder->getUriPart();
 
-        $site = $this->container->get('cms.context')->getSite();
+        $site = $this->context->getSite();
 
         // Если не указан сегмент URI, тогда он устанавливается в ID папки.
         if (empty($uriPart)

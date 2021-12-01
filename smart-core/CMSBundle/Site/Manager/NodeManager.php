@@ -4,19 +4,17 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Site\Manager;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
 use SmartCore\CMSBundle\Cache\CmsCacheProvider;
 use SmartCore\CMSBundle\CMSKernel;
 use SmartCore\CMSBundle\Controller\AbstractModuleNodeController;
-use SmartCore\CMSBundle\Entity\Folder;
-use SmartCore\CMSBundle\Entity\Node;
-use SmartCore\CMSBundle\Entity\Region;
 use SmartCore\CMSBundle\Form\Type\NodeDefaultPropertiesFormType;
 use SmartCore\CMSBundle\Form\Type\NodeFormType;
+use SmartCore\CMSBundle\Manager\ContextManager;
 use SmartCore\CMSBundle\Module\ModuleBundle;
+use SmartCore\CMSBundle\Site\Entity\Node;
 use SmartCore\CMSBundle\Twig\RegionRenderHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\DependencyInjection\ContainerAwareTrait;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -30,32 +28,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class NodeManager
 {
-    use ContainerAwareTrait;
-
-    /**
-     * @var EntityManager
-     */
-    protected $em;
-
-    /**
-     * @var FormFactoryInterface
-     */
-    protected $formFactory;
-
     /**
      * @var \SmartCore\CMSBundle\Repository\NodeRepository
      */
     protected $repository;
-
-    /**
-     * @var ContextManager
-     */
-    protected $context;
-
-    /**
-     * @var CMSKernel
-     */
-    protected $kernel;
 
     /**
      * Список всех нод, запрошенных в текущем контексте.
@@ -78,24 +54,13 @@ class NodeManager
      */
     protected $cache;
 
-    /**
-     * @param EntityManager $em
-     * @param FormFactoryInterface $formFactory
-     * @param KernelInterface $kernel
-     * @param ContextManager $context
-     * @param CmsCacheProvider $cache
-     */
     public function __construct(
-        EntityManager $em,
-        FormFactoryInterface $formFactory,
-        KernelInterface $kernel,
-        ContextManager $context,
-        CmsCacheProvider $cache
+        private EntityManagerInterface $em,
+        private FormFactoryInterface $formFactory,
+        private KernelInterface $kernel,
+        private ContextManager $context,
+        CmsCacheProvider $cache,
     ) {
-        $this->context      = $context;
-        $this->em           = $em;
-        $this->formFactory  = $formFactory;
-        $this->kernel       = $kernel;
         $this->repository   = $em->getRepository(Node::class);
         $this->cache        = $cache;
     }

@@ -12,6 +12,7 @@
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/orm": "^2.10",
+        "knplabs/knp-menu-bundle": "^3.2",
         "phpdocumentor/reflection-docblock": "^5.3",
         "scienta/doctrine-json-functions": "^4.4",
         "sensio/framework-extra-bundle": "^6.2",
@@ -42,7 +43,6 @@
         "symfony/validator": "5.3.*",
         "symfony/web-link": "5.4.*",
         "symfony/webapp-meta": "^1.0",
-        "symfony/webpack-encore-bundle": "^1.12",
         "symfony/yaml": "5.4.*",
         "twig/extra-bundle": "^3.0",
         "twig/twig": "^3.0"
