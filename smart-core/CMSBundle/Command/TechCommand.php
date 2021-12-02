@@ -10,7 +10,7 @@ use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\Persistence\ManagerRegistry;
 use SmartCore\CMSBundle\EntityCms\Domain;
 use SmartCore\CMSBundle\EntityCms\Language;
-use SmartCore\CMSBundle\Manager\SiteManager;
+use SmartCore\CMSBundle\Manager\CmsManager;
 use SmartCore\CMSBundle\SiteHandler;
 use SmartCore\RadBundle\Command\AbstractCommand;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -36,7 +36,7 @@ class TechCommand extends AbstractCommand
         protected EntityManagerInterface $em,
         protected KernelInterface $kernel,
         private ManagerRegistry $doctrine,
-        private SiteManager $siteManager,
+        private CmsManager $cmsManager,
         private ParameterBagInterface $parameterBag,
     ) {
         parent::__construct();
@@ -44,8 +44,6 @@ class TechCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-//        dump($this->siteManager->all());
-
         $projectDir = $this->kernel->getProjectDir();
 
         $db = new \PDO('sqlite:'.$projectDir.'/cms/db/cms.sqlite');
@@ -70,36 +68,6 @@ class TechCommand extends AbstractCommand
         dump($isSqliteJSONExtenstionLoaded);
 
         (new \ReflectionExtension('pdo_sqlite'))->info();
-
-        /*
-        $cmsEm = $this->doctrine->getManager('cms');
-
-        dump($this->doctrine->getManagers());
-
-        $count = 3;
-
-        Begin:
-
-        try {
-            if (!$count--) {
-                return self::FAILURE;
-            }
-
-            dump($cmsEm->getRepository(Language::class)->findAll());
-        } catch (TableNotFoundException $e) {
-            $command = $this->getApplication()->find('doctrine:schema:update');
-
-            $arguments = [
-                '--em'       => 'cms',
-                '--dump-sql' => true,
-                '--force'    => true,
-            ];
-
-            $returnCode = $command->run(new ArrayInput($arguments), new ConsoleOutput(OutputInterface::VERBOSITY_QUIET));
-
-            goto Begin;
-        }
-        */
 
         return self::SUCCESS;
     }

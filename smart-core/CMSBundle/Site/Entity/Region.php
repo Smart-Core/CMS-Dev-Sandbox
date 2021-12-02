@@ -11,15 +11,10 @@ use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity()
- * @ORM\Table(name="regions",
- *      indexes={
- *          @ORM\Index(columns={"position"}),
- *      }
- * )
- * @UniqueEntity(fields="name", message="Регион с таким именем уже используется")
- */
+#[ORM\Entity]
+#[ORM\Table('regions')]
+#[ORM\Index(columns: ['position'])]
+#[UniqueEntity(fields: ['name'], message: 'Регион с таким именем уже используется')]
 class Region
 {
     use ColumnTrait\Id;
@@ -28,18 +23,15 @@ class Region
     use ColumnTrait\Position;
     use ColumnTrait\UserId;
 
-    /**
-     * @ORM\Column(type="string", length=50, nullable=false, unique=true)
-     * @Assert\NotBlank()
-     */
+    #[ORM\Column(type: 'string', length: 50, nullable: false, unique: true)]
+    #[Assert\NotBlank]
     protected string $name;
 
     /**
      * @var Folder[]|ArrayCollection
-     *
-     * @ORM\ManyToMany(targetEntity="Folder", inversedBy="regions", fetch="EXTRA_LAZY")
-     * @ORM\JoinTable(name="regions_inherit")
      */
+    #[ORM\ManyToMany(targetEntity: Folder::class, inversedBy: 'regions', fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinTable('regions_inherit')]
     protected Collection $folders;
 
     public function __construct(?string $name = null, ?string $description = null)

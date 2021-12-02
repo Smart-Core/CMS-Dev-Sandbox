@@ -36,6 +36,6 @@ class User extends UserModel
 
     public function getUserIdentifier(): string
     {
-        return $this->getUsernameCanonical();
+        return (string) $this->getId();
     }
 }

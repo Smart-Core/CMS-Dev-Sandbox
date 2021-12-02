@@ -7,25 +7,21 @@ namespace SmartCore\CMSBundle\Site\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use SmartCore\CMSBundle\Site\Repository\FolderRepository;
 use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="SmartCore\CMSBundle\Site\Repository\FolderRepository")
- * @ORM\Table(name="folders",
- *      indexes={
- *          @ORM\Index(columns={"is_active"}),
- *          @ORM\Index(columns={"deleted_at"}),
- *          @ORM\Index(columns={"position"})
- *      },
- *      uniqueConstraints={
- *          @ORM\UniqueConstraint(columns={"parent_folder_id", "slug"}),
- *      }
- * )
- * @UniqueEntity(fields={"slug", "parent_folder"}, message="в каждой подпапке должен быть уникальный сегмент URI")
  * ORM\HasLifecycleCallbacks
  */
+#[ORM\Entity(repositoryClass: FolderRepository::class)]
+#[ORM\Table('folders')]
+#[ORM\Index(columns: ['is_active'])]
+#[ORM\Index(columns: ['deleted_at'])]
+#[ORM\Index(columns: ['position'])]
+#[ORM\UniqueConstraint(columns: ['slug', 'parent_folder_id'])]
+#[UniqueEntity(fields: ['slug', 'parent_folder'], message: 'в каждой подпапке должен быть уникальный сегмент URI')]
 class Folder
 {
     use ColumnTrait\Id;
@@ -34,36 +30,62 @@ class Folder
     use ColumnTrait\DeletedAt;
     use ColumnTrait\Description;
     use ColumnTrait\Position;
+    use ColumnTrait\Slug128;
+    use ColumnTrait\TitleNotBlank;
     use ColumnTrait\UserId;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Folder", inversedBy="children", cascade={"persist"})
-     * @ORM\JoinColumn(nullable=true)
+     * @ORM\Column(type="array")
      */
+    protected array $permissions_cache = [];
+
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    protected bool $is_file;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    protected ?array $meta = null;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     */
+    protected ?string $redirect_to = null;
+
+    /**
+     * @ORM\Column(type="array", nullable=true)
+     */
+    protected ?array $lockout_nodes = null;
+
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    protected ?string $template_inheritable = null;
+
+    /**
+     * @ORM\Column(type="string", length=30, nullable=true)
+     */
+    protected ?string $template_self = null;
+
+    #[ORM\ManyToOne(targetEntity: Folder::class, inversedBy: 'children', fetch: 'EXTRA_LAZY', cascade: ['persist'])]
+    #[ORM\JoinColumn(nullable: true)]
     protected ?Folder $parent_folder = null;
 
-    /**
-     * @var Folder[]|ArrayCollection
-     *
-     * @ORM\OneToMany(targetEntity="Folder", mappedBy="parent_folder")
-     * @ORM\OrderBy({"position" = "ASC"})
-     */
-    protected $children;
+    /** @var Folder[]|ArrayCollection */
+    #[ORM\OneToMany(targetEntity: Folder::class, mappedBy: 'parent_folder', fetch: 'EXTRA_LAZY')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    protected Collection $children;
 
-    /**
-     * @var Node[]|ArrayCollection
-     *
-     * ORM\OneToMany(targetEntity="Node", mappedBy="folder")
-     * ORM\OrderBy({"position" = "ASC"})
-     */
-    protected $nodes;
+    /** @var Node[]|ArrayCollection */
+    #[ORM\OneToMany(targetEntity: Node::class, mappedBy: 'folder', fetch: 'EXTRA_LAZY')]
+    #[ORM\OrderBy(['position' => 'ASC'])]
+    protected Collection $nodes;
 
-    /**
-     * @var Region[]|ArrayCollection
-     *
-     * ORM\ManyToMany(targetEntity="Region", mappedBy="folders", fetch="EXTRA_LAZY")
-     */
-    protected $regions;
+    /** @var Region[]|ArrayCollection */
+    #[ORM\ManyToMany(targetEntity: Region::class, mappedBy: 'folders', fetch: 'EXTRA_LAZY')]
+    protected Collection $regions;
 
     /**
      * @var UserGroup[]|ArrayCollection
@@ -84,56 +106,10 @@ class Folder
     protected $groups_granted_write;
 
     /**
-     * @ORM\Column(type="array")
-     */
-    protected array $permissions_cache = [];
-
-    /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank()
-     */
-    protected string $title;
-
-    /**
-     * @ORM\Column(type="string", length=190, nullable=true)
-     */
-    protected ?string $slug = null;
-
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    protected bool $is_file;
-
-    /**
-     * @ORM\Column(type="array", nullable=true)
-     */
-    protected ?array $meta = null;
-
-    /**
-     * @ORM\Column(type="string", nullable=true)
-     */
-    protected ?string $redirect_to = null;
-
-    /**
      * @ORM\ManyToOne(targetEntity="Node")
      * @ORM\Column(nullable=true)
      */
     protected ?Node $router_node = null;
-
-    /**
-     * @ORM\Column(type="array", nullable=true)
-     */
-    protected ?array $lockout_nodes = null;
-
-    /**
-     * @ORM\Column(type="string", length=30, nullable=true)
-     */
-    protected ?string $template_inheritable = null;
-
-    /**
-     * @ORM\Column(type="string", length=30, nullable=true)
-     */
-    protected ?string $template_self = null;
 
     /**
      * Для отображения в формах. Не маппится в БД.
@@ -158,7 +134,7 @@ class Folder
         $this->redirect_to          = null;
         $this->router_node_id       = null;
         $this->template_inheritable = null;
-        $this->uri_part             = null;
+        $this->slug                 = '';
     }
 
     public function __toString(): string
@@ -196,18 +172,6 @@ class Folder
     public function getNodes(): ?Collection
     {
         return $this->nodes;
-    }
-
-    public function setTitle(string $title): self
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    public function getTitle(): ?string
-    {
-        return $this->title;
     }
 
     public function setIsFile(bool $is_file): self

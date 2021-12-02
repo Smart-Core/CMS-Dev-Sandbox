@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace SmartCore\CMSBundle\Site\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use SmartCore\CMSBundle\EntitySite\Folder;
+use SmartCore\CMSBundle\Site\Entity\Folder;
 use SmartCore\RadBundle\Doctrine\RepositoryTrait;
 
 class FolderRepository extends EntityRepository

@@ -28,9 +28,7 @@ class Language
     #[Assert\NotBlank]
     protected string $code;
 
-    /**
-     * @var Domain[]|ArrayCollection
-     */
+    /** @var Domain[]|ArrayCollection */
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'language', fetch: 'EXTRA_LAZY')]
     protected Collection $domains;
 

@@ -5,24 +5,18 @@ declare(strict_types=1);
 namespace SmartCore\CMSBundle\Site\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-//use SmartCore\RadBundle\CMS\NodeInterface;
+use SmartCore\CMSBundle\Site\Repository\NodeRepository;
 use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use SmartCore\Bundle\CMSBundle\Tools\FrontControl;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="SmartCore\CMSBundle\Site\Repository\NodeRepository")*
- * @ORM\Table(name="nodes",
- *      indexes={
- *          @ORM\Index(columns={"is_active"}),
- *          @ORM\Index(columns={"deleted_at"}),
- *          @ORM\Index(columns={"position"}),
- *          @ORM\Index(columns={"region_id"}),
- *          @ORM\Index(columns={"module"})
- *      }
- * )
- * @ORM\HasLifecycleCallbacks
- */
+#[ORM\Entity(repositoryClass: NodeRepository::class)]
+#[ORM\Table('nodes')]
+#[ORM\Index(columns: ['is_active'])]
+#[ORM\Index(columns: ['deleted_at'])]
+#[ORM\Index(columns: ['position'])]
+#[ORM\Index(columns: ['region_id'])]
+#[ORM\HasLifecycleCallbacks]
 class Node implements \Serializable // NodeInterface,
 {
     // Получать элементы управления для тулбара.
@@ -46,83 +40,45 @@ class Node implements \Serializable // NodeInterface,
     protected $controls_in_toolbar;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=50)
-     * @Assert\NotBlank()
-     */
-    protected $module;
-
-    /**
-     * @var
-     *
      * @ORM\Column(type="sqlite_json", nullable=false)
      */
     protected array $params;
 
     /**
-     * @var string
-     *
      * @ORM\Column(type="string", length=30, nullable=true)
      */
-    protected $template;
-
-    /**
-     * @var Folder
-     *
-     * @ORM\ManyToOne(targetEntity="Folder", inversedBy="nodes")
-     * @Assert\NotBlank()
-     */
-    protected $folder;
-
-    /**
-     * @var Region
-     *
-     * @ORM\ManyToOne(targetEntity="Region", fetch="EAGER")
-     * @Assert\NotBlank()
-     */
-    protected $region;
+    protected ?string $template = null;
 
     /**
      * Приоритет порядка выполнения.
      *
-     * @var int
-     *
      * @ORM\Column(type="smallint")
      */
-    protected $priority;
+    protected int $priority;
 
     /**
      * Может ли нода кешироваться.
      *
-     * @var bool
-     *
      * @ORM\Column(type="boolean")
      */
-    protected $is_cached;
+    protected bool $is_cached;
 
     /**
      * Использовать Edit-In-Place. Если отключить также не будет генерироваться div вокруг ноды.
      *
-     * @var bool
-     *
      * @ORM\Column(type="boolean", options={"default":1})
      */
-    protected $is_use_eip;
+    protected bool $is_use_eip = true;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    protected $code_before;
+    protected ?string $code_before = null;
 
     /**
-     * @var string|null
-     *
      * @ORM\Column(type="string", nullable=true)
      */
-    protected $code_after;
+    protected ?string $code_after = null;
 
     /**
      * @ORM\Column(type="text", nullable=true)
@@ -139,31 +95,36 @@ class Node implements \Serializable // NodeInterface,
      */
     //protected $permissions;
 
+    #[ORM\ManyToOne(targetEntity: Module::class, inversedBy: 'nodes', fetch: 'EXTRA_LAZY', cascade: ['persist'])]
+    #[Assert\NotBlank]
+    protected Module $module;
+
+    #[ORM\ManyToOne(targetEntity: Folder::class, inversedBy: 'nodes', fetch: 'EXTRA_LAZY', cascade: ['persist'])]
+    #[Assert\NotBlank]
+    protected Folder $folder;
+
+    #[ORM\ManyToOne(targetEntity: Region::class, inversedBy: 'nodes', fetch: 'EAGER', cascade: ['persist'])]
+    #[Assert\NotBlank]
+    protected Region $region;
+
     // ================================= Unmapped properties =================================
 
     /**
      * Хранение folder_id для минимизации кол-ва запросов.
-     *
-     * @var int|null
      */
-    protected $folder_id = null;
+    protected ?int $folder_id = null;
 
-    /**
-     * @var array
-     */
-    protected $controller = [];
+    protected array $controller = [];
 
     /**
      * Edit-In-Place.
-     *
-     * @var bool
      */
-    protected $eip = false;
+    protected bool $eip = false;
 
     /**
      * @var FrontControl[]
      */
-    protected $front_controls = [];
+    protected array $front_controls = [];
 
     protected ?string $region_name = null;
 
@@ -173,16 +134,12 @@ class Node implements \Serializable // NodeInterface,
         $this->created_at   = new \DateTimeImmutable();
         $this->is_active    = true;
         $this->is_cached    = false;
-        $this->is_use_eip   = true;
         $this->params       = [];
         $this->position     = 0;
         $this->priority     = 0;
     }
 
-    /**
-     * Сериализация.
-     */
-    public function serialize()
+    public function serialize(): string
     {
         $this->getFolderId(); // Lazy load
 
@@ -217,7 +174,7 @@ class Node implements \Serializable // NodeInterface,
      */
     public function unserialize($serialized)
     {
-        list(
+        [
             $this->id,
             $this->is_active,
             $this->is_cached,
@@ -238,44 +195,29 @@ class Node implements \Serializable // NodeInterface,
             $this->user,
             $this->created_at,
             $this->deleted_at,
-            $this->controller) = unserialize($serialized);
+            $this->controller,
+        ] = unserialize($serialized, ['allowed_classes' => false]);
         //) = igbinary_unserialize($serialized);
     }
 
-    /**
-     * @return string|null
-     */
-    public function getCodeBefore()
+    public function getCodeBefore(): ?string
     {
         return $this->code_before;
     }
 
-    /**
-     * @param string $code_before
-     *
-     * @return $this
-     */
-    public function setCodeBefore($code_before)
+    public function setCodeBefore(?string $code_before): self
     {
         $this->code_before = $code_before;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getCodeAfter()
+    public function getCodeAfter(): ?string
     {
         return $this->code_after;
     }
 
-    /**
-     * @param string $code_after
-     *
-     * @return $this
-     */
-    public function setCodeAfter($code_after)
+    public function setCodeAfter(?string $code_after): self
     {
         $this->code_after = $code_after;
 
@@ -302,50 +244,31 @@ class Node implements \Serializable // NodeInterface,
         return $this->controls_in_toolbar;
     }
 
-    /**
-     * @param bool $is_cached
-     *
-     * @return $this
-     */
-    public function setIsCached($is_cached)
+    public function setIsCached($is_cached): self
     {
         $this->is_cached = $is_cached;
 
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function getIsCached()
+    public function getIsCached(): bool
     {
         return $this->is_cached;
     }
 
-    /**
-     * @param Region $region
-     *
-     * @return $this
-     */
-    public function setRegion(Region $region)
+    public function setRegion(Region $region): self
     {
         $this->region = $region;
 
         return $this;
     }
 
-    /**
-     * @return Region
-     */
-    public function getRegion()
+    public function getRegion(): Region
     {
         return $this->region;
     }
 
-    /**
-     * @return string
-     */
-    public function getRegionName()
+    public function getRegionName(): string
     {
         if (null === $this->region_name) {
             $this->region_name = $this->getRegion()->getName();
@@ -354,44 +277,28 @@ class Node implements \Serializable // NodeInterface,
         return $this->region_name;
     }
 
-    /**
-     * @param Folder $folder
-     *
-     * @return $this
-     */
-    public function setFolder(Folder $folder)
+    public function setFolder(Folder $folder): self
     {
         $this->folder = $folder;
 
         return $this;
     }
 
-    /**
-     * @return Folder
-     */
-    public function getFolder()
+    public function getFolder(): Folder
     {
         return $this->folder;
     }
 
-    /**
-     * @param string $module
-     *
-     * @return $this
-     */
-    public function setModule($module)
+    public function getModule(): Module
+    {
+        return $this->module;
+    }
+
+    public function setModule(Module $module): self
     {
         $this->module = $module;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getModule()
-    {
-        return $this->module;
     }
 
     public function setParams(array $params): self

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace SmartCore\CMSBundle\Manager;
+namespace SmartCore\CMSBundle\Site;
 
 use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Component\Stopwatch\StopwatchEvent;
 
-class ContextManager
+class SiteContext
 {
     protected Site $site;
 

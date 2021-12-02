@@ -72,14 +72,15 @@ security:
 Edit /composer.json
 ```json lines
 "scripts": {
-    ..........
+    ......
     "auto-scripts": {
         "sh bin/clear_cache": "script",
         "rm -rf public/bundles": "script",
-        "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd",
-        "cms:adminlte:create-symlink": "symfony-cmd"
+        "cms:init": "symfony-cmd",
+        "cms:adminlte:create-symlink": "symfony-cmd",
+        "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd"
     },
-    ..........
+    ......
 },
 ```
 
@@ -91,6 +92,6 @@ composer install
 
 First run
 ```shell
-bin/console cms:install
+bin/console cms:setup
 ```
 

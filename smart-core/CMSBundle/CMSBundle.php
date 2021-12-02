@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartCore\CMSBundle;
 
 use SmartCore\CMSBundle\DependencyInjection\Compiler\DoctrinePass;
+use SmartCore\CMSBundle\EntityCms\Site;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -34,12 +35,15 @@ class CMSBundle extends Bundle
         $container->import($confDirCms.'/{packages}/*.yaml');
         $container->import($confDirCms.'/{packages}/'.$container->env().'/*.yaml');
 
-        /*
+
         $config = [];
         $config['dbal']['connections']['site_1'] = [
             'url' => 'sqlite:///%kernel.project_dir%/cms/db/site_1.sqlite',
             'driver' => 'pdo_sqlite',
             'charset' => 'utf8',
+            'mapping_types' => [
+                'json' => 'sqlite_json',
+            ],
         ];
         $config['orm']['entity_managers']['site_1'] = [
             'connection' => 'site_1',
@@ -47,23 +51,23 @@ class CMSBundle extends Bundle
             'mappings' => [
                 'CMSBundle' => [
                     'is_bundle' => true,
-                    'type' => 'annotation',
-                    'dir' => 'Entity',
-                    'prefix' => 'SmartCore\CMSBundle\Entity',
+                    'type' => 'attribute',
+                    'dir' => 'Site\Entity',
+                    'prefix' => 'SmartCore\CMSBundle\Site\Entity',
                     'alias' => 'site_1'
                 ],
             ],
         ];
 
         $container->extension('doctrine', $config);
-        */
+
 
         try {
             $db = new \PDO('sqlite:'.$projectDir.'/cms/db/cms.sqlite');
             $st = $db->query('SELECT * FROM sites');
-            $results = $st->fetchAll();
+            $results = $st->fetchObject();
 
-            //dump($results);
+//            dump($results);
         } catch (\PDOException $e) {
             //dump($e->getMessage());
         }

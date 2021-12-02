@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Command;
 
-use SmartCore\CMSBundle\Manager\SiteManager;
+use SmartCore\CMSBundle\Manager\CmsManager;
 use SmartCore\RadBundle\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,7 +14,7 @@ class SiteListCommand extends AbstractCommand
     protected static $defaultName = 'cms:site:list';
 
     public function __construct(
-        private SiteManager $siteManager,
+        private CmsManager $cmsManager,
     ) {
         parent::__construct();
     }
@@ -29,7 +29,7 @@ class SiteListCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $rows = [];
-        foreach ($this->siteManager->all() as $site) {
+        foreach ($this->cmsManager->getSites() as $site) {
             $rows[] = [
                 $site->getId(),
                 $site->getName(),

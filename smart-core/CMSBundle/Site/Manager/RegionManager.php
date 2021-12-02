@@ -8,7 +8,7 @@ use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\ORM\EntityManagerInterface;
 use SmartCore\CMSBundle\EntitySite\Region;
 use SmartCore\CMSBundle\Form\Type\RegionFormType;
-use SmartCore\CMSBundle\Manager\ContextManager;
+use SmartCore\CMSBundle\Site\SiteContext;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 
@@ -18,7 +18,7 @@ class RegionManager
     protected $repository;
 
     public function __construct(
-        private ContextManager $context,
+        private SiteContext $context,
         private EntityManagerInterface $em,
         private FormFactoryInterface $formFactory,
     ) {

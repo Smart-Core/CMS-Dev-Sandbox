@@ -10,9 +10,9 @@ use SmartCore\CMSBundle\CMSKernel;
 use SmartCore\CMSBundle\Controller\AbstractModuleNodeController;
 use SmartCore\CMSBundle\Form\Type\NodeDefaultPropertiesFormType;
 use SmartCore\CMSBundle\Form\Type\NodeFormType;
-use SmartCore\CMSBundle\Manager\ContextManager;
 use SmartCore\CMSBundle\Module\ModuleBundle;
 use SmartCore\CMSBundle\Site\Entity\Node;
+use SmartCore\CMSBundle\Site\SiteContext;
 use SmartCore\CMSBundle\Twig\RegionRenderHelper;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Finder\Finder;
@@ -58,7 +58,7 @@ class NodeManager
         private EntityManagerInterface $em,
         private FormFactoryInterface $formFactory,
         private KernelInterface $kernel,
-        private ContextManager $context,
+        private SiteContext $context,
         CmsCacheProvider $cache,
     ) {
         $this->repository   = $em->getRepository(Node::class);

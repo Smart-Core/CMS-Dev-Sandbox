@@ -9,8 +9,8 @@ use SmartCore\CMSBundle\Cache\CmsCacheProvider;
 use SmartCore\CMSBundle\Site\Entity\Folder;
 use SmartCore\CMSBundle\Site\Entity\Node;
 use SmartCore\CMSBundle\Form\Type\FolderFormType;
-use SmartCore\CMSBundle\Manager\ContextManager;
 use SmartCore\CMSBundle\Repository\FolderRepository;
+use SmartCore\CMSBundle\Site\SiteContext;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -24,7 +24,7 @@ class FolderManager
     protected $cache;
 
     public function __construct(
-        private ContextManager $context,
+        private SiteContext $context,
         private EntityManagerInterface $em,
         private FormFactoryInterface $formFactory,
         private RequestStack $requestStack,

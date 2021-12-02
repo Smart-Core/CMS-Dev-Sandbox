@@ -8,6 +8,9 @@ use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Filesystem\Filesystem;
 
+/**
+ * НЕ используется
+ */
 class DoctrinePass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
@@ -32,7 +35,7 @@ class DoctrinePass implements CompilerPassInterface
             'mappings' => [
                 'CMSBundle' => [
                     'is_bundle' => true,
-                    'type' => 'annotation',
+                    'type' => 'attribute',
                     'dir' => 'EntityCms',
                     'prefix' => 'SmartCore\CMSBundle\EntityCms',
                     'alias' => 'CMS'

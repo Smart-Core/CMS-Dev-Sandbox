@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Command;
 
-use SmartCore\CMSBundle\Manager\SiteManager;
+use SmartCore\CMSBundle\Manager\CmsManager;
 use SmartCore\RadBundle\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InstallCommand extends AbstractCommand
+class SetupCommand extends AbstractCommand
 {
-    protected static $defaultName = 'cms:install';
+    protected static $defaultName = 'cms:setup';
 
     public function __construct(
-        private SiteManager $siteManager,
+        private CmsManager $cmsManager,
     ) {
         parent::__construct();
     }
@@ -28,7 +28,7 @@ class InstallCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $sites = $this->siteManager->all();
+        $sites = $this->cmsManager->getSites();
 
         if (!empty($sites)) {
             $this->io->text('<info>Smart Core</info>: CMS alredy installed');
@@ -36,7 +36,7 @@ class InstallCommand extends AbstractCommand
             return self::SUCCESS;
         }
 
-        $this->siteManager->add('default');
+        $this->cmsManager->addSite('default');
 
         $this->io->text('<info>Smart Core</info>: CMS installed <comment>succesfully</comment>');
 
