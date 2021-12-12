@@ -22,7 +22,7 @@ class DatasetController extends AbstractController
     public function index(EntityManagerInterface $em): Response
     {
         return $this->render('@CMS/admin/dataset/index.html.twig', [
-            'datasets' => $em->getRepository(Dataset::class)->findBy([], ['name' => 'ASC']),
+            'datasets' => [], // $em->getRepository(Dataset::class)->findBy([], ['name' => 'ASC']),
         ]);
     }
 

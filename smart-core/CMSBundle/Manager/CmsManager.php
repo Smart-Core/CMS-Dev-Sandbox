@@ -6,6 +6,7 @@ namespace SmartCore\CMSBundle\Manager;
 
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
+use SmartCore\CMSBundle\EntityCms\Domain;
 use SmartCore\CMSBundle\EntityCms\Parameter;
 use SmartCore\CMSBundle\EntityCms\Site;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -41,6 +42,14 @@ class CmsManager
     public function getSites(): array
     {
         return $this->em->getRepository(Site::class)->findBy([], ['id' => 'ASC']);
+    }
+
+    /**
+     * @return Domain[]
+     */
+    public function getDomains(): array
+    {
+        return $this->em->getRepository(Domain::class)->findBy([], ['id' => 'ASC']);
     }
 
     public function allParameters(): array

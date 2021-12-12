@@ -34,7 +34,7 @@ class Domain
 
     /** @var Domain[] List of aliases */
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'parent', fetch: 'EXTRA_LAZY')]
-    #[ORM\OrderBy(['position' => 'ASC', 'name' => 'ASC'])]
+    #[ORM\OrderBy(['name' => 'ASC'])]
     protected Collection $children;
 
     #[ORM\ManyToOne(targetEntity: Language::class, inversedBy: 'domains', fetch: 'EXTRA_LAZY')]

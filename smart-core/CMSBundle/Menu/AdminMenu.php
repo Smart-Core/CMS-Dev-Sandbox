@@ -33,12 +33,31 @@ class AdminMenu
         $menu->addChild('Configuration')
             ->setAttribute('class', 'nav-header');
 
-        /*
         $menu->addChild('Datasets', ['route' => 'cms_admin.dataset'])
             ->setExtras(['icon' => 'fas fa-th'])
             ->setAttribute('class', 'nav-item')
         ;
-        */
+
+        $menu->addChild('Modules', ['route' => 'cms_admin.module'])
+            ->setExtras(['icon' => 'fa fa-building'])
+            ->setAttribute('class', 'nav-item')
+        ;
+
+        $menu->addChild('Sites and Domains', ['route' => 'cms_admin.site'])
+            ->setExtras(['icon' => 'fa fa-sitemap'])
+            ->setAttribute('class', 'nav-item')
+        ;
+
+        $menu->addChild('Languages', ['route' => 'cms_admin.language'])
+            ->setExtras(['icon' => 'fa fa-language'])
+            ->setAttribute('class', 'nav-item')
+        ;
+
+        $menu->addChild('Design themes', ['route' => 'cms_admin.theme'])
+            ->setExtras(['icon' => 'fa fa-image'])
+            ->setAttribute('class', 'nav-item')
+        ;
+
 
         return $menu;
     }

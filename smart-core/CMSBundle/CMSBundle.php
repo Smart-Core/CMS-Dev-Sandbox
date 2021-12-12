@@ -52,7 +52,7 @@ class CMSBundle extends Bundle
                 'CMSBundle' => [
                     'is_bundle' => true,
                     'type' => 'attribute',
-                    'dir' => 'Site\Entity',
+                    'dir' => 'Site/Entity',
                     'prefix' => 'SmartCore\CMSBundle\Site\Entity',
                     'alias' => 'site_1'
                 ],

@@ -61,9 +61,6 @@ class InitCommand extends AbstractCommand
         }
     }
 
-    /**
-     * @return string The randomly generated secret
-     */
     protected function generateRandomSecret(): string
     {
         if (function_exists('openssl_random_pseudo_bytes')) {
