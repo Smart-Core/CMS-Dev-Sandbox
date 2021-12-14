@@ -39,18 +39,6 @@
     {%- endif %}
 
     <link href="{{ asset('bundles/cms/assets/adminlte_custom.css') }}" rel="stylesheet" type="text/css" />
-
-    <style type="text/css">
-        .cms-admin-table {
-            background-color: #f5f6f7;
-        }
-        .cms-admin-table th {
-            background-color: #e9eaeb;
-        }
-        td {
-            padding: 8px !important;
-        }
-    </style>
 {% endblock %}
 
 {% block javascripts -%}
@@ -161,6 +149,25 @@
                     <a href="{{ app.request.baseUrl }}/" class="nav-link" title="Перейти на сайт"><i class="fa fa-home"></i> На сайт</a>
                 </li>
 
+                <li class="nav-item">
+                    <form method="get" action="" name="cms-site-switcher" title="Переключатель вебсайтов" class="nav-link">
+                        {#                            <input type="hidden" name="route" value="cms_admin.index">#}
+                        <select name="site" onchange="this.form.submit()">
+                            <option value="1" {% if app.request.query.get('site') != 2 %}selected="selected"{% endif %}>Default Website</option>
+                            <option value="2" {% if app.request.query.get('site') == 2 %}selected="selected"{% endif %}>Second Website</option>
+                            {#
+                            {% for s in sites %}
+                                {% if s.selected == s.id %}
+                                    <option selected="selected" value="{{ s.id }}">{{ s.name }}</option>
+                                {% else %}
+                                    <option value="{{ s.id }}">{{ s.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                            #}
+                        </select>
+                    </form>
+                </li>
+
                 <!-- Messages Dropdown Menu -->
 {#                {% include '@CMS/_layout/_messages_dropdown.html.twig' %}#}
 
@@ -191,6 +198,7 @@
 
                 <!-- Sidebar Menu -->
                 <nav class="mt-2">
+
                     <!-- Sidebar Menu -->
                     {{ knp_menu_render('cms_admin_main', {
                         'clear_matcher': false,

@@ -60,13 +60,22 @@ a:hover {
 }
 
 .cms-site-switcher select {
-  width: 150px;
-  color: black;
+  /*width: 100%;*/
 }
 
 .cms-site-switcher option[selected=selected] {
-  color: blue;
   font-weight: bold;
+}
+/*
+.cms-admin-table {
+  background-color: #f5f6f7;
+}
+.cms-admin-table th {
+  background-color: #e9eaeb;
+}
+*/
+td {
+  padding: 8px !important;
 }
 
 .clear {

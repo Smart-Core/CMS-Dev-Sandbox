@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartCore\CMSBundle\Controller\Admin;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use SmartCore\CMSBundle\EntityCms\Site;
 use SmartCore\CMSBundle\Manager\CmsManager;
 use SmartCore\CMSBundle\Manager\SecurityManager;
@@ -63,6 +64,7 @@ class SiteController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/', name: 'cms_admin.site_edit')]
+    #[ParamConverter('site', options: ['entity_manager' => 'cms'])]
     public function edit(Request $request, Site $site): Response
     {
         return $this->render('@CMS/admin/site/edit.html.twig', [

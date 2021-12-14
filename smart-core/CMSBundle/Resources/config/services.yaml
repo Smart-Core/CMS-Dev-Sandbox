@@ -25,5 +25,10 @@ services:
             - { name: knp_menu.menu_builder, method: main, alias: cms_admin_main } # The alias is what is used to retrieve the menu
             - { name: knp_menu.menu_builder, method: dataset, alias: cms_admin_dataset }
 
+    SmartCore\CMSBundle\Menu\AdminStructureMenu:
+        arguments: ['@knp_menu.factory']
+        tags:
+            - { name: knp_menu.menu_builder, method: tree, alias: cms_admin_structure_tree }
+
 #imports:
 #    - { resource: './packages/*.yaml', ignore_errors: false }

@@ -30,10 +30,46 @@ class AdminMenu
             ->setAttribute('class', 'nav-item')
         ;
 
+        $menu->addChild('Site structure', ['route' => 'cms_admin.structure'])
+            ->setExtras(['icon' => 'fas fa-folder-open'])
+            ->setAttribute('class', 'nav-item')
+        ;
+
+        $menu->addChild('Users', ['route' => 'cms_admin.dataset', 'routeParameters' => ['users']])
+            ->setExtras(['icon' => 'fas fa-users'])
+            ->setAttribute('class', 'nav-item')
+        ;
+
+        $menu->addChild('Files', ['route' => 'cms_admin.dataset', 'routeParameters' => ['files']])
+            ->setExtras(['icon' => 'fas fa-download'])
+            ->setAttribute('class', 'nav-item')
+        ;
+
+        $menu->addChild('Заказы', ['route' => 'cms_admin.dataset', 'routeParameters' => ['orders']])
+            ->setExtras(['icon' => 'fas fa-cart-plus'])
+            ->setAttribute('class', 'nav-item')
+            ->setAttribute('title', '@todo')
+        ;
+
+        $menu->addChild('Content')
+            ->setAttribute('class', 'nav-header');
+
+        $menu->addChild('Блог', ['route' => 'cms_admin.dataset', 'routeParameters' => ['blog']])
+            ->setExtras(['icon' => 'fas fa-list-ul'])
+            ->setAttribute('class', 'nav-item')
+            ->setAttribute('title', '@todo пользовательский набор ДатаСет')
+        ;
+
+        $menu->addChild('Новости', ['route' => 'cms_admin.dataset', 'routeParameters' => ['news']])
+            ->setExtras(['icon' => 'fas fa-list-ul'])
+            ->setAttribute('class', 'nav-item')
+            ->setAttribute('title', '@todo пользовательский набор ДатаСет')
+        ;
+
         $menu->addChild('Configuration')
             ->setAttribute('class', 'nav-header');
 
-        $menu->addChild('Datasets', ['route' => 'cms_admin.dataset'])
+        $menu->addChild('Datasets', ['route' => 'cms_admin.dataset', 'routeParameters' => ['dataset']])
             ->setExtras(['icon' => 'fas fa-th'])
             ->setAttribute('class', 'nav-item')
         ;
