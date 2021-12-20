@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Manager;
 
+use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use SmartCore\CMSBundle\EntityCms\Domain;
 use SmartCore\CMSBundle\EntityCms\Parameter;
 use SmartCore\CMSBundle\EntityCms\Site;
+use SmartCore\CMSBundle\Site\Entity\Folder;
+use SmartCore\CMSBundle\Site\Entity\Region;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -33,7 +36,12 @@ class CmsManager
         $this->em->persist($site);
         $this->em->flush();
 
-        // @todo DB for site
+        $this->execCommand('cache:clear'); // Очистка кеша и тутже вармап.
+    }
+
+    public function getSiteEm(int|string $id): ObjectManager
+    {
+        return $this->doctrine->getManager('site_' . $id);
     }
 
     /**
@@ -41,7 +49,11 @@ class CmsManager
      */
     public function getSites(): array
     {
-        return $this->em->getRepository(Site::class)->findBy([], ['id' => 'ASC']);
+        try {
+            return $this->em->getRepository(Site::class)->findBy([], ['id' => 'ASC']);
+        } catch (TableNotFoundException) {
+            return [];
+        }
     }
 
     /**
@@ -94,17 +106,27 @@ class CmsManager
         return $this;
     }
 
+    public function getProjectKey(): string
+    {
+        return $this->getParameter('project_key');
+    }
+
     public function schemaUpdate(string $em = 'cms', bool $force = true, bool $dumpSql = false): BufferedOutput
+    {
+        return $this->execCommand('doctrine:schema:update', [
+            '--em'    => $em,
+            '--force' => $force,
+            '--dump-sql' => $dumpSql,
+            '--no-debug' => true,
+        ]);
+    }
+
+    public function execCommand(string $name, array $arguments = []): BufferedOutput
     {
         $application = new Application($this->kernel);
         $application->setAutoExit(false);
 
-        $command = $application->find('doctrine:schema:update');
-        $arguments = [
-            '--em'    => $em,
-            '--force' => $force,
-            '--dump-sql' => $dumpSql,
-        ];
+        $command = $application->find($name);
 
         $output = new BufferedOutput();
 
@@ -113,8 +135,53 @@ class CmsManager
         return $output;
     }
 
-    public function getProjectKey(): string
+    public function bootInit(): void
     {
-        return $this->getParameter('project_key');
+        $this->schemaUpdate('cms');
+
+        $this->initProjectKey();
+
+        foreach ($this->getSites() as $site) {
+            $siteDbName = 'site_' . $site->getId();
+
+            $this->schemaUpdate($siteDbName);
+
+            $emSite = $this->getSiteEm($site->getId());
+
+            $defaultRegion = $emSite->getRepository(Region::class)->findOneBy(['name' => 'content']);
+
+            if (!$defaultRegion) {
+                $defaultRegion = new Region('content', 'Content workspace');
+
+                $emSite->persist($defaultRegion);
+                $emSite->flush();
+            }
+
+            $rootFolder = $emSite->getRepository(Folder::class)->find(1);
+
+            if (!$rootFolder) {
+                $rootFolder = new Folder();
+                $rootFolder->setTitle('Homepage');
+
+                $emSite->persist($rootFolder);
+                $emSite->flush();
+            }
+        }
+    }
+
+    protected function initProjectKey(): void
+    {
+        if (!$this->hasParameter('project_key')) {
+            $this->setParameter('project_key', $this->generateRandomSecret());
+        }
+    }
+
+    protected function generateRandomSecret(): string
+    {
+        if (function_exists('openssl_random_pseudo_bytes')) {
+            return hash('sha1', openssl_random_pseudo_bytes(23));
+        }
+
+        return hash('sha1', uniqid((string) mt_rand(), true));
     }
 }

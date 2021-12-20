@@ -12,6 +12,7 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
+        "ext-pdo": "*",
         "ext-sqlite3": "*",
         "ext-xml": "*",
 

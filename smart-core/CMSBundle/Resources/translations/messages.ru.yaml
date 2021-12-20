@@ -272,6 +272,11 @@ web/: web/
 Web root: Веб корень
 Width: Ширина
 
+# Temporary
+Blog: Блог
+News: Новости
+Orders: Заказы
+
 cms:
     admin:
         login:

@@ -45,7 +45,7 @@ class AdminMenu
             ->setAttribute('class', 'nav-item')
         ;
 
-        $menu->addChild('Заказы', ['route' => 'cms_admin.dataset', 'routeParameters' => ['orders']])
+        $menu->addChild('Orders', ['route' => 'cms_admin.dataset', 'routeParameters' => ['orders']])
             ->setExtras(['icon' => 'fas fa-cart-plus'])
             ->setAttribute('class', 'nav-item')
             ->setAttribute('title', '@todo')
@@ -54,13 +54,13 @@ class AdminMenu
         $menu->addChild('Content')
             ->setAttribute('class', 'nav-header');
 
-        $menu->addChild('Блог', ['route' => 'cms_admin.dataset', 'routeParameters' => ['blog']])
+        $menu->addChild('Blog', ['route' => 'cms_admin.dataset', 'routeParameters' => ['blog']])
             ->setExtras(['icon' => 'fas fa-list-ul'])
             ->setAttribute('class', 'nav-item')
             ->setAttribute('title', '@todo пользовательский набор ДатаСет')
         ;
 
-        $menu->addChild('Новости', ['route' => 'cms_admin.dataset', 'routeParameters' => ['news']])
+        $menu->addChild('News', ['route' => 'cms_admin.dataset', 'routeParameters' => ['news']])
             ->setExtras(['icon' => 'fas fa-list-ul'])
             ->setAttribute('class', 'nav-item')
             ->setAttribute('title', '@todo пользовательский набор ДатаСет')

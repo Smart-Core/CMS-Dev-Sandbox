@@ -40,7 +40,7 @@ class AdminStructureMenu
         ]);
         $menu->setExtra('translation_domain', false);
 
-        dump($options);
+//        dump($options);
 
 //        $this->addChild($menu);
 

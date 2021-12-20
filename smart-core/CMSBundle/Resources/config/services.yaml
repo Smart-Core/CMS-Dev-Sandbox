@@ -18,6 +18,9 @@ services:
         calls:
             - [ setContainer, [ '@service_container' ] ]
         tags: ['controller.service_arguments']
+    
+    SmartCore\CMSBundle\Manager\CmsManager:
+        public: true
 
     SmartCore\CMSBundle\Menu\AdminMenu:
         arguments: ['@knp_menu.factory']
