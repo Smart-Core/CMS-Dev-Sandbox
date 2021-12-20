@@ -1,5 +1,6 @@
 #Integrate to existing Symfony Project
 
+
 Install bundle
 ```shell
 composer require smart-core/cms-bundle
@@ -38,7 +39,7 @@ security:
     firewalls:
         ......        
         cms_admin:
-            provider: 'YOU_PROVIDER_NAME'
+            provider: '===YOU_PROVIDER_NAME==='
             context: cms
             pattern: ^/%cms.admin_path%
             form_login:
@@ -66,27 +67,6 @@ security:
         - { path: ^/%cms.admin_path%/$, allow_if: '!is_authenticated() or is_fully_authenticated()' } }
         - { path: ^/%cms.admin_path%, roles: ROLE_ADMIN }
         ......
-```
-
-
-Edit /composer.json
-```json lines
-"scripts": {
-    ......
-    "auto-scripts": {
-        "sh bin/clear_cache": "script",
-        "rm -rf public/bundles": "script",
-        "cms:init": "symfony-cmd",
-        "cms:adminlte:create-symlink": "symfony-cmd",
-        "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd"
-    },
-    ......
-},
-```
-
-Apply changes in composer.json
-```shell
-composer install
 ```
 
 

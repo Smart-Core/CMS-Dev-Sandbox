@@ -96,7 +96,6 @@
         "auto-scripts": {
             "sh bin/clear_cache": "script",
             "rm -rf public/bundles": "script",
-            "cms:adminlte:create-symlink": "symfony-cmd",
             "assets:install --symlink --relative %PUBLIC_DIR%": "symfony-cmd"
         },
         "post-install-cmd": [

@@ -137,6 +137,8 @@ class CmsManager
 
     public function bootInit(): void
     {
+        $this->execCommand('cms:adminlte:create-symlink', ['--soft' => true]);
+
         $this->schemaUpdate('cms');
 
         $this->initProjectKey();

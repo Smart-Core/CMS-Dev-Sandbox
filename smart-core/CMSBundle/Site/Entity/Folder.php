@@ -30,9 +30,14 @@ class Folder
     use ColumnTrait\DeletedAt;
     use ColumnTrait\Description;
     use ColumnTrait\Position;
-    use ColumnTrait\Slug128;
     use ColumnTrait\TitleNotBlank;
     use ColumnTrait\UserId;
+
+    #[ORM\Column(type: 'string', length: 128, nullable: false, unique: false)]
+    #[Assert\Length(max: 128)]
+    #[Assert\NotBlank()]
+    #[Assert\NotNull()]
+    protected string $slug;
 
     /**
      * @ORM\Column(type="array")
@@ -158,6 +163,7 @@ class Folder
         }
     }
 
+
     /**
      * @return Folder[]|ArrayCollection
      */
@@ -189,6 +195,23 @@ class Folder
     public function isFile(): bool
     {
         return $this->is_file;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(?string $slug): self
+    {
+        $this->slug = trim((string) $slug);
+
+        $encoding = mb_detect_encoding($this->slug);
+        $this->slug = $encoding
+            ? mb_convert_case($this->slug, MB_CASE_LOWER, $encoding)
+            : mb_convert_case($this->slug, MB_CASE_LOWER);
+
+        return $this;
     }
 
     public function setUriPart(?string $uri_part): self

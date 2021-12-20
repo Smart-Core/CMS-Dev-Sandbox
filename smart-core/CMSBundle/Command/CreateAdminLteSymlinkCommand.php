@@ -6,6 +6,7 @@ namespace SmartCore\CMSBundle\Command;
 
 use SmartCore\RadBundle\Command\AbstractCommand;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
@@ -20,13 +21,6 @@ class CreateAdminLteSymlinkCommand extends AbstractCommand
 
     protected static $defaultName = 'cms:adminlte:create-symlink';
 
-    protected function configure()
-    {
-        $this
-            ->setDescription('Create symlink from vendor/almasaeed2010/adminlte to CMSBundle/Resources/public/assets/adminlte')
-        ;
-    }
-
     public function __construct(
         protected KernelInterface $kernel,
         private Filesystem $filesystem
@@ -34,13 +28,27 @@ class CreateAdminLteSymlinkCommand extends AbstractCommand
         parent::__construct();
     }
 
+    protected function configure()
+    {
+        $this
+            ->setDescription('Create symlink from vendor/almasaeed2010/adminlte to CMSBundle/Resources/public/assets/adminlte')
+            ->addOption('soft', null, InputOption::VALUE_NONE, 'Do not create if already exist')
+        ;
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $projectDir = $this->kernel->getProjectDir();
 
-        $cmsPublicDir = $projectDir.'/smart-core/CMSBundle/Resources/public/assets/adminlte';
+        $cmsPublicDir = $this->kernel->getBundle('CMSBundle')->getPath().'/Resources/public/assets/adminlte';
 
         if (is_dir($cmsPublicDir) or is_file($cmsPublicDir)) {
+            if ($input->getOption('soft')) {
+                $this->io->text('@CMSBundle/Resources/public/assets/adminlte is already exist');
+
+                return self::SUCCESS;
+            }
+
             $this->filesystem->remove($cmsPublicDir);
         }
 
