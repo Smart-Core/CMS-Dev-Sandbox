@@ -8,6 +8,7 @@ use Doctrine\DBAL\Exception\TableNotFoundException;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Persistence\ObjectManager;
 use SmartCore\CMSBundle\EntityCms\Domain;
+use SmartCore\CMSBundle\EntityCms\Language;
 use SmartCore\CMSBundle\EntityCms\Parameter;
 use SmartCore\CMSBundle\EntityCms\Site;
 use SmartCore\CMSBundle\Site\Entity\Folder;
@@ -16,6 +17,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class CmsManager
 {
@@ -24,8 +26,14 @@ class CmsManager
     public function __construct(
         private KernelInterface $kernel,
         private ManagerRegistry $doctrine,
+        private TranslatorInterface $translator,
     ) {
         $this->em = $this->doctrine->getManager('cms');
+    }
+
+    public function getEm(): ObjectManager
+    {
+        return $this->em;
     }
 
     public function addSite(string $name, ?string $theme = null)
@@ -42,6 +50,11 @@ class CmsManager
     public function getSiteEm(int|string $id): ObjectManager
     {
         return $this->doctrine->getManager('site_' . $id);
+    }
+
+    public function getSite(int $id): Site
+    {
+        return $this->em->getRepository(Site::class)->find($id);
     }
 
     /**
@@ -143,6 +156,15 @@ class CmsManager
 
         $this->initProjectKey();
 
+        $languages = $this->em->getRepository(Language::class)->findAll();
+
+        if (empty($languages)) {
+            $language = new Language($this->translator->getLocale());
+
+            $this->em->persist($language);
+            $this->em->flush();
+        }
+
         foreach ($this->getSites() as $site) {
             $siteDbName = 'site_' . $site->getId();
 
@@ -185,5 +207,35 @@ class CmsManager
         }
 
         return hash('sha1', uniqid((string) mt_rand(), true));
+    }
+
+    /**
+     * @todo !!!
+     */
+    public function getSiteSwitcher(): array
+    {
+        $siteSwitcher = [];
+        $sites = $this->em->getRepository('CMSBundle:Site')->findBy(['is_enabled' => true], ['position' => 'ASC', 'name' => 'ASC']);
+
+        if ($this->parameterBag->has('cms_sites_domains')) {
+            $rewriteSiteDomains = $this->parameterBag->get('cms_sites_domains');
+        } else {
+            $rewriteSiteDomains = [];
+        }
+
+        foreach ($sites as $site) {
+            $siteSwitcher[$site->getId()] = [
+                'id'       => $site->getId(),
+                'name'     => $site->getName(),
+                'domain'   => (string) $site->getDomain(),
+                'selected' => $site->getId() == $this->getSite()->getId() ? true : false,
+            ];
+
+            if (isset($rewriteSiteDomains[$site->getId()]) and !empty($rewriteSiteDomains[$site->getId()])) {
+                $siteSwitcher[$site->getId()]['domain'] = $rewriteSiteDomains[$site->getId()];
+            }
+        }
+
+        return $siteSwitcher;
     }
 }

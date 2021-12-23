@@ -99,7 +99,7 @@ class Folder
      * ORM\JoinTable(name="cms_permissions_folders_read")
      * ORM\OrderBy({"position" = "ASC", "title" = "ASC"})
      */
-    protected $groups_granted_read;
+//    protected $groups_granted_read;
 
     /**
      * @var UserGroup[]|ArrayCollection
@@ -108,7 +108,7 @@ class Folder
      * ORM\JoinTable(name="cms_permissions_folders_write")
      * ORM\OrderBy({"position" = "ASC", "title" = "ASC"})
      */
-    protected $groups_granted_write;
+//    protected $groups_granted_write;
 
     /**
      * @ORM\ManyToOne(targetEntity="Node")
@@ -123,17 +123,19 @@ class Folder
 
     public function __construct()
     {
-        $this->groups_granted_read  = new ArrayCollection();
-        $this->groups_granted_write = new ArrayCollection();
+        $this->id = 0;
+
+//        $this->groups_granted_read  = new ArrayCollection();
+//        $this->groups_granted_write = new ArrayCollection();
         $this->children             = new ArrayCollection();
         $this->created_at           = new \DateTimeImmutable();
         $this->is_active            = true;
         $this->is_file              = false;
-        $this->lockout_nodes        = null;
-        $this->meta                 = [];
-        $this->nodes                = new ArrayCollection();
+//        $this->lockout_nodes        = null;
+//        $this->meta                 = [];
+//        $this->nodes                = new ArrayCollection();
         $this->parent_folder        = null;
-        $this->permissions_cache    = [];
+//        $this->permissions_cache    = [];
         $this->position             = 0;
         $this->regions              = new ArrayCollection();
         $this->redirect_to          = null;
@@ -212,18 +214,6 @@ class Folder
             : mb_convert_case($this->slug, MB_CASE_LOWER);
 
         return $this;
-    }
-
-    public function setUriPart(?string $uri_part): self
-    {
-        $this->uri_part = $uri_part;
-
-        return $this;
-    }
-
-    public function getUriPart(): string
-    {
-        return (string) $this->uri_part;
     }
 
     public function setMeta(array $meta): self

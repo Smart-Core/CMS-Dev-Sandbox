@@ -46,6 +46,12 @@ a:hover {
   color: #23527c;
   text-decoration: underline;
 }
+.dark-mode a {
+  color: #01B9FE;
+}
+.dark-mode a:hover {
+  color: #5eb5e0;
+}
 .login-logo a {
   text-decoration: none;
 }
@@ -109,6 +115,9 @@ td {
   color: blue;
   font-weight: bold;
 }
+.dark-mode .form-control option[selected=selected] {
+  color: #66afe9;
+}
 .form-vertical .checkbox {
   margin-left: 0;
 }
@@ -153,6 +162,10 @@ td {
 .cms_form {
   background-color: #e2e3e4;
   padding: 15px 15px 1px 10px;
+}
+
+.dark-mode .cms_form {
+  background-color: #4C545C;
 }
 
 @media (min-width: 992px) {

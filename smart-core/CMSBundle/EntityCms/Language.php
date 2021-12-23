@@ -21,6 +21,7 @@ class Language
     use ColumnTrait\Id;
     use ColumnTrait\IsEnabled;
     use ColumnTrait\NameUnique;
+    use ColumnTrait\Position;
     use ColumnTrait\CreatedAt;
 
     #[ORM\Column(type: 'string', length: 12, unique: true)]
@@ -32,10 +33,14 @@ class Language
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'language', fetch: 'EXTRA_LAZY')]
     protected Collection $domains;
 
-    public function __construct()
+    #[ORM\ManyToMany(targetEntity: Site::class, mappedBy: 'languages', fetch: 'EXTRA_LAZY')]
+    protected Collection $sites;
+
+    public function __construct(string $code = '')
     {
         $this->created_at = new \DateTimeImmutable();
-        $this->code       = '';
+        $this->code       = $code;
+        $this->name       = $code;
         $this->domains    = new ArrayCollection();
         $this->is_enabled = true;
     }
@@ -45,15 +50,15 @@ class Language
         return $this->code;
     }
 
-    public function setCode(string $code): self
+    public function setCode(?string $code): self
     {
-        $this->code = $code;
+        $this->code = trim((string) $code);
 
         return $this;
     }
 
     /**
-     * @return Collection|Domain[]
+     * @return Domain[]
      */
     public function getDomains(): Collection
     {
@@ -63,6 +68,21 @@ class Language
     public function setDomains(Collection $domains): self
     {
         $this->domains = $domains;
+
+        return $this;
+    }
+
+    /**
+     * @return Site[]
+     */
+    public function getSites(): Collection
+    {
+        return $this->sites;
+    }
+
+    public function setSites(Collection $sites): self
+    {
+        $this->sites = $sites;
 
         return $this;
     }

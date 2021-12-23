@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartCore\CMSBundle;
 
 use SmartCore\CMSBundle\DependencyInjection\Compiler\DoctrinePass;
+use SmartCore\CMSBundle\DependencyInjection\Compiler\FormPass;
 use SmartCore\CMSBundle\Manager\CmsManager;
 use Symfony\Component\DependencyInjection\Compiler\PassConfig;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -41,6 +42,7 @@ class CMSBundle extends Bundle
             $filesystem->mkdir($cmsDbDir);
         }
 
+        $container->addCompilerPass(new FormPass());
         //$container->addCompilerPass(new DoctrinePass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
     }
 

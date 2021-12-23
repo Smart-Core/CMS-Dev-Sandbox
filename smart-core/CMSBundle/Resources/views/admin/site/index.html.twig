@@ -24,7 +24,8 @@
             <th>{{ 'Appellation'|trans }}</th>
             <th>{{ 'Domain'|trans }}</th>
             <th>{{ 'Theme'|trans }}</th>
-            <th>{{ 'Language'|trans }}</th>
+            <th>{{ 'Default language'|trans }}</th>
+            <th>{{ 'Languages'|trans }}</th>
             <th>{{ 'Is enabled'|trans }}</th>
             <th>{{ 'Web root'|trans }}</th>
             <th>{{ 'Created at'|trans }}</th>
@@ -48,6 +49,11 @@
                 </td>
                 <td>{{ e.theme }}</td>
                 <td>{{ e.defaultLanguage }}</td>
+                <td>
+                    {% for language in e.languages %}
+                        <span class="badge badge-secondary">{{ language }}</span>
+                    {% endfor %}
+                </td>
                 <td>{{ e.isEnabled }}</td>
                 <td>{{ e.webRoot }}</td>
                 <td>{{ e.createdAt|format_date }}</td>

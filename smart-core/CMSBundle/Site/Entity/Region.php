@@ -34,6 +34,10 @@ class Region
     #[ORM\JoinTable('regions_inherit')]
     protected Collection $folders;
 
+    #[ORM\OneToMany(targetEntity: Node::class, mappedBy: 'region', fetch: 'EXTRA_LAZY')]
+    #[ORM\JoinTable('regions_inherit')]
+    protected Collection $nodes;
+
     public function __construct(?string $name = null, ?string $description = null)
     {
         $this->created_at   = new \DateTimeImmutable();

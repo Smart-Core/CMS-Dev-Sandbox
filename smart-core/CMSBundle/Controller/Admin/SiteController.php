@@ -7,9 +7,9 @@ namespace SmartCore\CMSBundle\Controller\Admin;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use SmartCore\CMSBundle\EntityCms\Site;
+use SmartCore\CMSBundle\Form\Type\SiteFormType;
 use SmartCore\CMSBundle\Manager\CmsManager;
 use SmartCore\CMSBundle\Manager\SecurityManager;
-use SmartCore\CMSBundle\Site\Manager\SiteManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,7 +20,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 class SiteController extends AbstractController
 {
     #[Route('/', name: 'cms_admin.site')]
-    public function index(SecurityManager $securityManager, SiteManager $siteManager, CmsManager $cmsManager): Response
+    public function index(SecurityManager $securityManager, CmsManager $cmsManager): Response
     {
         return $this->render('@CMS/admin/site/index.html.twig', [
             'sites' => $cmsManager->getSites(),
@@ -39,8 +39,7 @@ class SiteController extends AbstractController
         ;
 
         $form = $this->createForm(SiteFormType::class, $site);
-        $form->add('create', SubmitType::class, ['attr' => ['class' => 'btn-primary']]);
-        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form->remove('update');
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -65,10 +64,34 @@ class SiteController extends AbstractController
 
     #[Route('/{id<\d+>}/', name: 'cms_admin.site_edit')]
     #[ParamConverter('site', options: ['entity_manager' => 'cms'])]
-    public function edit(Request $request, Site $site): Response
+    public function edit(int $id, CmsManager $cmsManager, Request $request): Response
     {
+        $em = $cmsManager->getEm();
+
+        $site = $em->getRepository(Site::class)->find($id);
+
+        $form = $this->createForm(SiteFormType::class, $site);
+        $form->remove('create');
+
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+
+            if ($form->has('cancel') and $form->get('cancel')->isClicked()) {
+                return $this->redirectToRoute('cms_admin.site');
+            }
+
+            if ($form->get('update')->isClicked() and $form->isValid()) {
+                $em->persist($form->getData());
+                $em->flush();
+
+                $this->addFlash('success', 'Site updated successfully');
+
+                return $this->redirectToRoute('cms_admin.site');
+            }
+        }
+
         return $this->render('@CMS/admin/site/edit.html.twig', [
-            //'form'    => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 }

@@ -20,6 +20,7 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class TechCommand extends AbstractCommand
 {
@@ -38,6 +39,7 @@ class TechCommand extends AbstractCommand
         private ManagerRegistry $doctrine,
         private CmsManager $cmsManager,
         private ParameterBagInterface $parameterBag,
+        private TranslatorInterface $translator,
     ) {
         parent::__construct();
     }
@@ -68,6 +70,10 @@ class TechCommand extends AbstractCommand
         dump($isSqliteJSONExtenstionLoaded);
 
         (new \ReflectionExtension('pdo_sqlite'))->info();
+
+        //dump($this->parameterBag->get('local'));
+
+        dump($this->translator->getLocale());
 
         return self::SUCCESS;
     }
