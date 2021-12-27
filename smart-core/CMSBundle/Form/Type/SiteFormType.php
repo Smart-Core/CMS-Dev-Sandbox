@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SmartCore\CMSBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
+use SmartCore\CMSBundle\EntityCms\Domain;
 use SmartCore\CMSBundle\EntityCms\Language;
 use SmartCore\CMSBundle\EntityCms\Site;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -36,34 +37,44 @@ class SiteFormType extends AbstractType
                     'placeholder' => 'New site'
                 ]
             ])
+            ->add('multilanguage_mode', ChoiceType::class, [
+                'choices'  => Site::getMultilanguageModeFormChoices(),
+                'required' => true,
+                'choice_translation_domain' => false,
+            ])
             /*
             ->add('domain', EntityType::class, [
+                'required' => false,
                 'class'         => Domain::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')->where('e.parent IS NULL');
                 },
-                'required' => false,
             ])
-            */
+
             ->add('languages', null, [
                 'expanded' => true,
                 'multiple' => true,
             ])
+
             ->add('default_language', EntityType::class, [
+                'required'      => false,
                 'class'         => Language::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('e')->where('e.is_enabled = true')->orderBy('e.position', 'ASC');
                 },
             ])
-            ->add('web_root', null, [
-                'attr' => [
-                    'placeholder' => 'web/',
-                ],
-            ])
+            */
             ->add('theme', ChoiceType::class, [
                 'choices'  => $themes,
                 'required' => false,
                 'choice_translation_domain' => false,
+            ])
+            ->add('sub_path', null, [
+                'attr' => [
+                    'placeholder' => 'some-site1/',
+                ],
+                'help' => 'Подпуть сайта, например: domain.com/site1/',
+                'translation_domain' => false,
             ])
             //->add('position')
 

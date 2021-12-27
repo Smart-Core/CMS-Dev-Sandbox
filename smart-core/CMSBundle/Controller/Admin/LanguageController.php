@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Controller\Admin;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use SmartCore\CMSBundle\EntityCms\Language;
-use SmartCore\CMSBundle\EntityCms\Site;
 use SmartCore\CMSBundle\Form\Type\LanguageFormType;
 use SmartCore\CMSBundle\Manager\CmsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +26,7 @@ class LanguageController extends AbstractController
     }
 
     #[Route('/create/', name: 'cms_admin.language_create')]
-    public function create(CmsManager $cmsManager, Request $request): Response
+    public function create(CmsManager $cmsManager, Request $request): Response|RedirectResponse
     {
         $em = $cmsManager->getEm();
 
@@ -58,11 +58,10 @@ class LanguageController extends AbstractController
     }
 
     #[Route('/{id<\d+>}/', name: 'cms_admin.language_edit')]
-    public function edit(int $id, CmsManager $cmsManager, Request $request): Response
+    #[ParamConverter('language', options: ['entity_manager' => 'cms'])]
+    public function edit(Language $language, CmsManager $cmsManager, Request $request): Response|RedirectResponse
     {
         $em = $cmsManager->getEm();
-
-        $language = $em->getRepository(Language::class)->find($id);
 
         $form = $this->createForm(LanguageFormType::class, $language);
         $form->remove('create');

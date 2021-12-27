@@ -33,15 +33,16 @@ class SiteListCommand extends AbstractCommand
             $rows[] = [
                 $site->getId(),
                 $site->getName(),
-                $site->getTheme(),
+                $site->getMultilanguageModeValue(),
                 $site->getDomain(),
                 $site->getDefaultLanguage(),
+                $site->getTheme(),
                 $site->isEnabled() ? '+' : '<error>-</error>',
                 $site->getCreatedAt()->format('Y-m-d H:i'),
             ];
         }
 
-        $this->io->table(['ID', 'Name', 'Theme', 'Domain', 'Default Language', 'Enabled', 'Created At'], $rows);
+        $this->io->table(['ID', 'Name', 'Multilanguage Mode', 'Domain', 'Default Language', 'Theme', 'Enabled', 'Created At'], $rows);
 
 
         return self::SUCCESS;

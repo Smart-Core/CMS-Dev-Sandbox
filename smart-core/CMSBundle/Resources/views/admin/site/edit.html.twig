@@ -7,5 +7,7 @@
 {% block content_header 'Edit site'|trans ~ ': &laquo;' ~ form.vars.value.name ~ '&raquo;' %}
 
 {% block content_body %}
+    <h1>Редактирование сайта: {{ site }}</h1>
+
     {% include '@CMS/Form/default.html.twig' %}
 {% endblock %}

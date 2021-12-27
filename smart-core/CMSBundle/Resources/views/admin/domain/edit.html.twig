@@ -15,5 +15,13 @@
 {% endblock %}
 
 {% block content_body %}
+    <h1>
+        {% if domain.parent is empty %}
+            {{ 'Edit domain'|trans }}: &laquo;{{ domain.name }}&raquo;
+        {% else %}
+            {{ 'Edit domain alias for'|trans }}: &laquo;{{ domain.parent }}&raquo;
+        {% endif %}
+    </h1>
+
     {% include '@CMS/Form/default.html.twig' %}
 {% endblock %}

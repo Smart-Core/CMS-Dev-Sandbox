@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace SmartCore\CMSBundle\Controller\Admin;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use SmartCore\CMSBundle\EntityCms\Domain;
+use SmartCore\CMSBundle\Form\Type\DomainFormType;
 use SmartCore\CMSBundle\Manager\CmsManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -24,11 +26,13 @@ class DomainController extends AbstractController
     }
 
     #[Route('/domain_create/', name: 'cms_admin.domain_create')]
-    public function create(Request $request): Response
+    public function create(CmsManager $cmsManager, Request $request): Response|RedirectResponse
     {
+        $em = $cmsManager->getEm();
+
         $form = $this->createForm(DomainFormType::class, new Domain());
-        $form->add('create', SubmitType::class, ['attr' => ['class' => 'btn-primary']]);
-        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form->remove('delete');
+        $form->remove('update');
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -38,30 +42,28 @@ class DomainController extends AbstractController
             }
 
             if ($form->get('create')->isClicked() and $form->isValid()) {
-                /** @var Domain $language */
-                $domain = $form->getData();
-                $domain->setUser($this->getUser());
+                $em->persist($form->getData());
+                $em->flush();
 
-                $this->persist($domain, true);
-
-                $this->addFlash('success', 'Domain добавлен.');
+                $this->addFlash('success', 'Домен добавлен.');
 
                 return $this->redirectToRoute('cms_admin.domains');
             }
         }
 
         return $this->render('@CMS/admin/domain/create.html.twig', [
-            'form'    => $form->createView(),
+            'form' => $form->createView(),
         ]);
     }
 
-    #[Route('/domain/{id<\d+>}/', name: 'cms_admin.domain_edit')]
-    public function edit(Request $request, Domain $domain): Response
+    #[Route('/{id<\d+>}/', name: 'cms_admin.domain_edit')]
+    #[ParamConverter('domain', options: ['entity_manager' => 'cms'])]
+    public function edit(Domain $domain, CmsManager $cmsManager, Request $request): Response|RedirectResponse
     {
+        $em = $cmsManager->getEm();
+
         $form = $this->createForm(DomainFormType::class, $domain);
-        $form->add('update', SubmitType::class, ['attr' => ['class' => 'btn-primary']]);
-        $form->add('delete', SubmitType::class, ['attr' => ['class' => 'btn-danger', 'onclick' => "return confirm('Вы уверены, что хотите удалить домен?')", 'formnovalidate' => 'formnovalidate']]);
-        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form->remove('create');
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -71,14 +73,18 @@ class DomainController extends AbstractController
             }
 
             if ($form->get('delete')->isClicked() and $form->isValid()) {
-                $this->remove($form->getData(), true);
+                $em->remove($form->getData());
+                $em->flush();
+
                 $this->addFlash('success', 'Domain удалён.');
 
                 return $this->redirectToRoute('cms_admin.domains');
             }
 
             if ($form->get('update')->isClicked() and $form->isValid()) {
-                $this->persist($form->getData(), true);
+                $em->persist($form->getData());
+                $em->flush();
+
                 $this->addFlash('success', 'Domain обновлён.');
 
                 return $this->redirectToRoute('cms_admin.domains');
@@ -86,19 +92,23 @@ class DomainController extends AbstractController
         }
 
         return $this->render('@CMS/admin/domain/edit.html.twig', [
-            'form'    => $form->createView(),
+            'domain' => $domain,
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/domain_create_alias/{id<\d+>}/', name: 'cms_admin.domain_create_alias')]
-    public function createAlias(Request $request, Domain $domain): Response
+    #[ParamConverter('domain', options: ['entity_manager' => 'cms'])]
+    public function createAlias(Domain $domain, CmsManager $cmsManager, Request $request): Response|RedirectResponse
     {
+        $em = $cmsManager->getEm();
+
         $alias = new Domain();
         $alias->setParent($domain);
 
         $form = $this->createForm(DomainFormType::class, $alias);
-        $form->add('create', SubmitType::class, ['attr' => ['class' => 'btn-primary']]);
-        $form->add('cancel', SubmitType::class, ['attr' => ['class' => 'btn-default', 'formnovalidate' => 'formnovalidate']]);
+        $form->remove('delete');
+        $form->remove('update');
 
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
@@ -108,11 +118,8 @@ class DomainController extends AbstractController
             }
 
             if ($form->get('create')->isClicked() and $form->isValid()) {
-                /** @var Domain $language */
-                $domain = $form->getData();
-                $domain->setUser($this->getUser());
-
-                $this->persist($domain, true);
+                $em->persist($form->getData());
+                $em->flush();
 
                 $this->addFlash('success', 'Domain alias добавлен.');
 

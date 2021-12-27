@@ -65,6 +65,7 @@ Datasets: Наборы данных
 Date: Дата
 Dashboard: Рабочий стол
 Datetime: Дата и время
+Default: По умолчанию
 Default language: Язык по умолчанию
 Descr: Описание
 Description: Описание
@@ -169,6 +170,7 @@ Module: Модуль
 Module linking parameters: Параметры подключения модуля
 Modules: Модули
 Modules count: Кол-во модулей
+Multilanguage mode: Режим мультиязычности
 Name: Имя
 Never: Никогда
 New site: Новый сайт
@@ -240,6 +242,7 @@ Structure: Структура
 Styles: Стили
 System: Система
 System information: Информация о системе
+Sub path: Под путь
 Success: Успешно
 Table: Таблица
 Tables: Таблицы

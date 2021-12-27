@@ -23,23 +23,22 @@ class Domain
 
     // For Aliases
     #[ORM\Column(type: 'boolean', nullable: false)]
-    protected bool $is_redirect;
+    private bool $is_redirect;
 
     #[ORM\Column(type: 'date', nullable: true)]
-    protected ?\DateTimeInterface $paid_till_date;
+    private ?\DateTimeInterface $paid_till_date;
 
     // For Aliases
     #[ORM\ManyToOne(targetEntity: Domain::class, inversedBy: 'children', fetch: 'EXTRA_LAZY')]
-    protected ?Domain $parent;
+    private ?Domain $parent = null;
 
     /** @var Domain[] List of aliases */
     #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'parent', fetch: 'EXTRA_LAZY')]
     #[ORM\OrderBy(['name' => 'ASC'])]
-    protected Collection $children;
+    private Collection $children;
 
-    #[ORM\ManyToOne(targetEntity: Language::class, inversedBy: 'domains', fetch: 'EXTRA_LAZY')]
-    #[ORM\JoinColumn(nullable: true)]
-    protected ?Language $language;
+    #[ORM\OneToMany(targetEntity: SiteLanguage::class, mappedBy: 'domain', cascade: ['remove'], fetch: 'EXTRA_LAZY')]
+    private Collection $sites_languages;
 
     public function __construct(?string $name = null)
     {
@@ -104,14 +103,17 @@ class Domain
         return $this;
     }
 
-    public function getLanguage(): ?Language
+    /**
+     * @return SiteLanguage[]
+     */
+    public function getSitesLanguages(): Collection
     {
-        return $this->language;
+        return $this->sites_languages;
     }
 
-    public function setLanguage(?Language $language): self
+    public function setSitesLanguages(Collection $sites_languages): self
     {
-        $this->language = $language;
+        $this->sites_languages = $sites_languages;
 
         return $this;
     }

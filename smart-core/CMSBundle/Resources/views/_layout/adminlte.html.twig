@@ -84,6 +84,8 @@
     <!-- AdminLTE for demo purposes -->
 {#    <script src="{{ asset('bundles/cms/assets/adminlte/dist/js/demo.js') }}"></script>#}
 
+    <script src="{{ asset('bundles/cms/assets/pnotify/pnotify.custom.min.js') }}"></script>
+
     {% include '@SmartCoreRad/flash_messages/pnotify.html.twig' %}
 
     <script>
@@ -113,6 +115,14 @@
 
 {% if form is defined %}
     {% form_theme form '@CMS/Form/horizontal_layout.html.twig' %}
+{% endif %}
+
+{% if form2 is defined %}
+    {% form_theme form2 '@CMS/Form/horizontal_layout.html.twig' %}
+{% endif %}
+
+{% if form3 is defined %}
+    {% form_theme form3 '@CMS/Form/horizontal_layout.html.twig' %}
 {% endif %}
 
 {% block body_attr %}

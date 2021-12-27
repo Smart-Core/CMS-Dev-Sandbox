@@ -7,6 +7,7 @@ namespace SmartCore\CMSBundle\Controller\Admin;
 use SmartCore\CMSBundle\Manager\ContextManager;
 use SmartCore\CMSBundle\Site\Form\Type\FolderFormType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -23,7 +24,7 @@ class StructureController extends AbstractController
     }
 
     #[Route('/folder/create/', name: 'cms_admin.structure_folder_create')]
-    public function folderCreate(Request $request, ContextManager $contextManager): Response
+    public function folderCreate(Request $request, ContextManager $contextManager): Response|RedirectResponse
     {
         $em = $contextManager->getSiteEm();
 

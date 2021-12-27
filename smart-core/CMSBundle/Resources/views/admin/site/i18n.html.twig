@@ -1,0 +1,82 @@
+{% extends '@CMS/admin.html.twig' %}
+
+{% block title %}{{ 'Edit site'|trans }} / {{ parent() }}{% endblock %}
+
+{% block page_header 'Sites'|trans %}
+{% block page_description 'Настройка сайтов и доменов' %}
+{#{% block content_header 'Edit site'|trans ~ ': &laquo;' ~ form.vars.value.name ~ '&raquo;' %}#}
+
+{% block content_body %}
+    <h1>Интернационализация сайта: {{ site }}</h1>
+
+    <p>Режим мультиязычности: <b>{{ site.multilanguageModeValue }}</b></p>
+
+    {% if site.multilanguageMode == 'off' %}
+        {% include '@CMS/Form/default.html.twig' with {'form': form}  %}
+    {% elseif site.multilanguageMode == 'domain' %}
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th style="width: 1%;">id</th>
+                <th>{{ 'Language'|trans }}</th>
+                <th>{{ 'Domain'|trans }}</th>
+{#                <th>{{ 'Theme'|trans }}</th>#}
+                <th>{{ 'Created at'|trans }}</th>
+                <th>{{ 'Action'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for e in site.languages %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ e.language }}</td>
+                    <td>{{ e.domain ?? 'N/A' }}</td>
+{#                    <td>{{ e.theme }}</td>#}
+                    <td>{{ e.createdAt|format_date }}</td>
+                    <td><a href="?del={{ e.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Вы уверены, что хотите удалить?')">Удалить</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Добавить язык привязанный к домену</h3>
+
+        {% include '@CMS/Form/default.html.twig' with {'form': form2}  %}
+    {% elseif site.multilanguageMode == 'path' %}
+        {% include '@CMS/Form/default.html.twig' with {'form': form}  %}
+
+        <h3>Языки</h3>
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th style="width: 1%;">id</th>
+                <th>{{ 'Language'|trans }}</th>
+                <th>{{ 'Default'|trans }}</th>
+                <th>{{ 'Created at'|trans }}</th>
+                <th>{{ 'Action'|trans }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for e in site.languages %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ e.language }}</td>
+                    <td>
+                        {% if site.defaultLanguage == e.language %}
+                            <span class="badge badge-success">ДА</span>
+                        {% else %}
+                            <a href="?default={{ e.id }}" class="btn btn-sm btn-outline-secondary">назначить</a>
+                        {% endif %}
+                    </td>
+                    <td>{{ e.createdAt|format_date }}</td>
+                    <td><a href="?del={{ e.id }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Вы уверены, что хотите удалить?')">Удалить</a></td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <h3>Добавить язык</h3>
+        {% include '@CMS/Form/default.html.twig' with {'form': form3}  %}
+    {% endif %}
+
+{% endblock %}

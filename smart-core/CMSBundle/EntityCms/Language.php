@@ -27,22 +27,23 @@ class Language
     #[ORM\Column(type: 'string', length: 12, unique: true)]
     #[Assert\Length(min: 2, max: 12)]
     #[Assert\NotBlank]
-    protected string $code;
+    private string $code;
 
-    /** @var Domain[]|ArrayCollection */
-    #[ORM\OneToMany(targetEntity: Domain::class, mappedBy: 'language', fetch: 'EXTRA_LAZY')]
-    protected Collection $domains;
-
-    #[ORM\ManyToMany(targetEntity: Site::class, mappedBy: 'languages', fetch: 'EXTRA_LAZY')]
-    protected Collection $sites;
+    #[ORM\OneToMany(targetEntity: SiteLanguage::class, mappedBy: 'language', fetch: 'EXTRA_LAZY')]
+    private Collection $sites_languages;
 
     public function __construct(string $code = '')
     {
-        $this->created_at = new \DateTimeImmutable();
-        $this->code       = $code;
-        $this->name       = $code;
-        $this->domains    = new ArrayCollection();
-        $this->is_enabled = true;
+        $this->created_at       = new \DateTimeImmutable();
+        $this->code             = $code;
+        $this->name             = $code;
+        $this->sites_languages  = new ArrayCollection();
+        $this->is_enabled       = true;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getName() . ' (' . $this->code . ')';
     }
 
     public function getCode(): string
@@ -58,31 +59,16 @@ class Language
     }
 
     /**
-     * @return Domain[]
+     * @return SiteLanguage[]
      */
-    public function getDomains(): Collection
+    public function getSitesLanguages(): Collection
     {
-        return $this->domains;
+        return $this->sites_languages;
     }
 
-    public function setDomains(Collection $domains): self
+    public function setSitesLanguages(Collection $sites_languages): self
     {
-        $this->domains = $domains;
-
-        return $this;
-    }
-
-    /**
-     * @return Site[]
-     */
-    public function getSites(): Collection
-    {
-        return $this->sites;
-    }
-
-    public function setSites(Collection $sites): self
-    {
-        $this->sites = $sites;
+        $this->sites_languages = $sites_languages;
 
         return $this;
     }

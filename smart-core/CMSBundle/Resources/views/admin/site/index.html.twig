@@ -22,12 +22,11 @@
         <tr>
             <th style="width: 1%;">id</th>
             <th>{{ 'Appellation'|trans }}</th>
-            <th>{{ 'Domain'|trans }}</th>
+            <th>{{ 'Multilanguage mode'|trans }}</th>
+{#            <th>{{ 'Domain'|trans }}</th>#}
             <th>{{ 'Theme'|trans }}</th>
-            <th>{{ 'Default language'|trans }}</th>
-            <th>{{ 'Languages'|trans }}</th>
             <th>{{ 'Is enabled'|trans }}</th>
-            <th>{{ 'Web root'|trans }}</th>
+            <th>{{ 'Sub path'|trans }}</th>
             <th>{{ 'Created at'|trans }}</th>
         </tr>
         </thead>
@@ -36,6 +35,34 @@
             <tr>
                 <td><a href="{{ path('cms_admin.site_edit', {'id': e.id}) }}">{{ e.id }}</a></td>
                 <td><a href="{{ path('cms_admin.site_edit', {'id': e.id}) }}">{{ e.name }}</a></td>
+                <td>
+                    <a href="{{ path('cms_admin.site_i18n', {'id': e.id}) }}" class="btn btn-sm btn-outline-info">Настроить: {{ e.multilanguageModeValue }}</a>
+                    <br>
+
+                    {% if e.multilanguageMode == 'off' %}
+                        Domain: <b>{{ e.domain ?? '---' }}</b>
+                        <br>Language: <b>{{ e.defaultLanguage ?? '---' }}</b>
+                    {% elseif e.multilanguageMode == 'domain' %}
+                        <ol>
+                        {% for l in e.languages %}
+                            <li><b>{{ l.domain ?? 'N/A' }}</b> => {{ l.language }}</li>
+                        {% endfor %}
+                        </ol>
+                    {% elseif e.multilanguageMode == 'path' %}
+                        Domain: <b>{{ e.domain ?? '---' }}</b>
+                        <ol>
+                            {% for l in e.languages %}
+                                <li><b>{{ l.language.code }}</b> => {{ l.language.name }}
+                                    {% if e.defaultLanguage == l.language %}
+                                        <span class="badge badge-success">{{ 'Default'|trans }}</span>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ol>
+                    {% endif %}
+
+                </td>
+                {#
                 <td>{{ e.domain }}
                     {% if e.domain is not empty and e.domain.children is not empty %}
                         <div class="alert" style="background-color: #ececec !important; color: black !important;">
@@ -47,15 +74,10 @@
                         </div>
                     {% endif %}
                 </td>
+                #}
                 <td>{{ e.theme }}</td>
-                <td>{{ e.defaultLanguage }}</td>
-                <td>
-                    {% for language in e.languages %}
-                        <span class="badge badge-secondary">{{ language }}</span>
-                    {% endfor %}
-                </td>
                 <td>{{ e.isEnabled }}</td>
-                <td>{{ e.webRoot }}</td>
+                <td>{{ e.subPath }}</td>
                 <td>{{ e.createdAt|format_date }}</td>
             </tr>
         {% endfor %}

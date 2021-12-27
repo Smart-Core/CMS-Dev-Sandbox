@@ -10,35 +10,58 @@ use Doctrine\ORM\Mapping as ORM;
 use SmartCore\RadBundle\Doctrine\ColumnTrait;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
+// @todo Валидатор на уникальность 'domain', 'sub_path' учитывающий нули
 #[ORM\Entity]
 #[ORM\Table('sites')]
+//#[ORM\UniqueConstraint(columns: ['domain_id', 'sub_path'])]
+#[UniqueEntity('domain')]
+#[UniqueEntity('sub_path')]
+//#[UniqueEntity(fields: ['domain', 'sub_path'], ignoreNull: true)]
 #[UniqueEntity(fields: ['name'], message: 'This site already exist')]
 class Site
 {
+    const MULTILANGUAGE_MODE_DOMAIN = 'domain';
+    const MULTILANGUAGE_MODE_PATH = 'path';
+    const MULTILANGUAGE_MODE = [
+        'off'    => 'Off (Single language)',
+        'domain' => 'Domain (en.domain.com, ru.domain.com)',
+        'path'   => 'Path (domain.com/en/, domain.com/ru/)',
+    ];
+
     use ColumnTrait\Id;
     use ColumnTrait\IsEnabled;
     use ColumnTrait\NameUnique;
     use ColumnTrait\CreatedAt;
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    protected ?string $theme;
+    #[ORM\Column(type: 'string', length: 6, options: ['default' => 'off'])]
+    private string $multilanguage_mode;
 
-    #[ORM\Column(type: 'string', nullable: true)]
-    protected ?string $web_root;
+    #[ORM\Column(type: 'string', nullable: true, length: 64)]
+    private ?string $theme;
 
+    // Подпуть сайта, например: domain.com/site1/
+    #[ORM\Column(type: 'string', nullable: true, length: 32, unique: true)]
+    private ?string $sub_path;
+
+    // Если указан домен, то сайт будет открываться только по этому домену.
+    // Только для MULTILANGUAGE_MODE_OFF
     #[ORM\ManyToOne(targetEntity: Domain::class, fetch: 'EXTRA_LAZY')]
-    #[ORM\JoinColumn(nullable: true)]
-    protected ?Domain $domain;
+    #[ORM\JoinColumn(nullable: true, unique: true)]
+    private ?Domain $domain;
 
+    // Для MULTILANGUAGE_MODE_PATH and MULTILANGUAGE_MODE_OFF
     #[ORM\ManyToOne(targetEntity: Language::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: true)]
-    protected ?Language $default_language = null;
+    private ?Language $default_language = null;
 
-    /** @var Language[]|ArrayCollection */
-    #[ORM\ManyToMany(targetEntity: Language::class, inversedBy: 'sites', fetch: 'EXTRA_LAZY')]
-    #[ORM\OrderBy(['position' => 'ASC'])]
-    #[ORM\JoinTable('sites_languages')]
-    protected Collection $languages;
+    /**
+     * В режиме MULTILANGUAGE_MODE_PATH - включает список доступных языков для {_locale} и не требуется указывать домен.
+     * В режиме MULTILANGUAGE_MODE_DOMAIN - обязательно нужно указать домен.
+     *
+     * @var SiteLanguage[]|ArrayCollection
+     */
+    #[ORM\OneToMany(targetEntity: SiteLanguage::class, mappedBy: 'site', fetch: 'EXTRA_LAZY')]
+    private Collection $languages;
 
     public function __construct(?string $name = null)
     {
@@ -46,9 +69,20 @@ class Site
             $this->name = $name;
         }
 
-        $this->created_at = new \DateTimeImmutable();
-        $this->is_enabled = true;
-        $this->languages  = new ArrayCollection();
+        $this->multilanguage_mode = self::MULTILANGUAGE_MODE['off'];
+        $this->created_at         = new \DateTimeImmutable();
+        $this->is_enabled         = true;
+        $this->languages          = new ArrayCollection();
+    }
+
+    public function getMultilanguageModeValue(): string
+    {
+        return self::MULTILANGUAGE_MODE[$this->multilanguage_mode];
+    }
+
+    static public function getMultilanguageModeFormChoices(): array
+    {
+        return array_flip(self::MULTILANGUAGE_MODE);
     }
 
     public function getTheme(): ?string
@@ -63,14 +97,26 @@ class Site
         return $this;
     }
 
-    public function getWebRoot(): ?string
+    public function getMultilanguageMode(): string
     {
-        return $this->web_root;
+        return $this->multilanguage_mode;
     }
 
-    public function setWebRoot(?string $web_root): self
+    public function setMultilanguageMode(string $multilanguage_mode): self
     {
-        $this->web_root = $web_root;
+        $this->multilanguage_mode = $multilanguage_mode;
+
+        return $this;
+    }
+
+    public function getSubPath(): ?string
+    {
+        return $this->sub_path;
+    }
+
+    public function setSubPath(?string $sub_path): self
+    {
+        $this->sub_path = $sub_path;
 
         return $this;
     }
@@ -100,7 +146,7 @@ class Site
     }
 
     /**
-     * @return Language[]
+     * @return SiteLanguage[]
      */
     public function getLanguages(): Collection
     {

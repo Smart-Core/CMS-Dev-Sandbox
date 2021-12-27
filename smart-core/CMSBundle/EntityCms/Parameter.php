@@ -15,10 +15,10 @@ class Parameter
     use ColumnTrait\NameUnique;
 
     #[ORM\Column(type: 'boolean')]
-    protected bool $is_serialized = false;
+    private bool $is_serialized = false;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    protected ?string $value = null;
+    private ?string $value = null;
 
     public function __construct(string $name = null, ?string $value = null)
     {
