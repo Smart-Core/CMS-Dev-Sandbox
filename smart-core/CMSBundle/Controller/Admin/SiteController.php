@@ -106,7 +106,7 @@ class SiteController extends AbstractController
         $form2->remove('delete');
         $form2->remove('update');
 
-        // ML PATH
+        // ML PATH and COOKIE
         $form3 = $this->createForm(SiteLanguageFormType::class, new SiteLanguage($site));
         $form3->remove('delete');
         $form3->remove('update');

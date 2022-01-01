@@ -42,7 +42,7 @@
         <h3>Добавить язык привязанный к домену</h3>
 
         {% include '@CMS/Form/default.html.twig' with {'form': form2}  %}
-    {% elseif site.multilanguageMode == 'path' %}
+    {% elseif site.multilanguageMode == 'path' or site.multilanguageMode == 'cookie' %}
         {% include '@CMS/Form/default.html.twig' with {'form': form}  %}
 
         <h3>Языки</h3>
