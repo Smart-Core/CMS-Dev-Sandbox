@@ -20,8 +20,10 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 #[UniqueEntity(fields: ['name'], message: 'This site already exist')]
 class Site
 {
+    const MULTILANGUAGE_MODE_OFF    = 'off';
+    const MULTILANGUAGE_MODE_COOKIE = 'cookie';
+    const MULTILANGUAGE_MODE_PATH   = 'path';
     const MULTILANGUAGE_MODE_DOMAIN = 'domain';
-    const MULTILANGUAGE_MODE_PATH = 'path';
     const MULTILANGUAGE_MODE = [
         'off'    => 'Off (Single language)',
         'path'   => 'Path (domain.com/en/, domain.com/ru/)',
@@ -49,7 +51,7 @@ class Site
     // Только для MULTILANGUAGE_MODE_OFF
     #[ORM\ManyToOne(targetEntity: Domain::class, fetch: 'EXTRA_LAZY')]
     #[ORM\JoinColumn(nullable: true, unique: true)]
-    private ?Domain $domain;
+    private ?Domain $domain = null;
 
     // Для MULTILANGUAGE_MODE_PATH and MULTILANGUAGE_MODE_OFF
     #[ORM\ManyToOne(targetEntity: Language::class, fetch: 'EXTRA_LAZY')]
@@ -71,7 +73,7 @@ class Site
             $this->name = $name;
         }
 
-        $this->multilanguage_mode = self::MULTILANGUAGE_MODE['off'];
+        $this->multilanguage_mode = self::MULTILANGUAGE_MODE_OFF;
         $this->created_at         = new \DateTimeImmutable();
         $this->is_enabled         = true;
         $this->languages          = new ArrayCollection();

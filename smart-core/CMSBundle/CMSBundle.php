@@ -58,35 +58,49 @@ class CMSBundle extends Bundle
             $db = new \PDO('sqlite:'.$projectDir.'/cms/db/cms.sqlite');
             $st = $db->query('SELECT * FROM sites');
 
-            foreach ($st->fetchAll(\PDO::FETCH_OBJ) as $site) {
+            $sites = $st->fetchAll(\PDO::FETCH_OBJ);
+
+            if (empty($sites)) {
+                $site = new \stdClass();
+                $site->id = 1;
+                $sites[] = $site;
+            }
+
+            foreach ($sites as $site) {
                 $siteDbName = 'site_' . $site->id;
 
-                $config['dbal']['connections'][$siteDbName] = [
-                    'url' => "sqlite:///%kernel.project_dir%/cms/db/{$siteDbName}.sqlite",
-                    'driver' => 'pdo_sqlite',
-                    'charset' => 'utf8',
-                    'mapping_types' => [
-                        'json' => 'sqlite_json',
-                    ],
-                ];
-                $config['orm']['entity_managers'][$siteDbName] = [
-                    'connection' => $siteDbName,
-                    'naming_strategy' => 'doctrine.orm.naming_strategy.underscore_number_aware',
-                    'mappings' => [
-                        'CMSBundle' => [
-                            'is_bundle' => true,
-                            'type' => 'attribute',
-                            'dir' => 'Site/Entity',
-                            'prefix' => 'SmartCore\CMSBundle\Site\Entity',
-                            'alias' => $siteDbName,
-                        ],
-                    ],
-                ];
+                $this->createDoctrineConfigForSite($siteDbName, $config);
             }
         } catch (\PDOException $e) {
             //dump($e->getMessage());
+            $this->createDoctrineConfigForSite('site_1', $config);
         }
 
         $container->extension('doctrine', $config);
+    }
+
+    protected function createDoctrineConfigForSite(string $siteDbName, array &$config): void
+    {
+        $config['dbal']['connections'][$siteDbName] = [
+            'url' => "sqlite:///%kernel.project_dir%/cms/db/{$siteDbName}.sqlite",
+            'driver' => 'pdo_sqlite',
+            'charset' => 'utf8',
+            'mapping_types' => [
+                'json' => 'sqlite_json',
+            ],
+        ];
+        $config['orm']['entity_managers'][$siteDbName] = [
+            'connection' => $siteDbName,
+            'naming_strategy' => 'doctrine.orm.naming_strategy.underscore_number_aware',
+            'mappings' => [
+                'CMSBundle' => [
+                    'is_bundle' => true,
+                    'type' => 'attribute',
+                    'dir' => 'Site/Entity',
+                    'prefix' => 'SmartCore\CMSBundle\Site\Entity',
+                    'alias' => $siteDbName,
+                ],
+            ],
+        ];
     }
 }
