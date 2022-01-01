@@ -21,12 +21,11 @@
         <thead>
         <tr>
             <th style="width: 1%;">id</th>
-            <th>{{ 'Appellation'|trans }}</th>
-            <th>{{ 'Multilanguage mode'|trans }}</th>
+            <th>{{ 'Appellation'|trans }} / {{ 'Comment'|trans }}</th>
+            <th>{{ 'Multilanguage'|trans }}</th>
 {#            <th>{{ 'Domain'|trans }}</th>#}
-            <th>{{ 'Theme'|trans }}</th>
-            <th>{{ 'Is enabled'|trans }}</th>
             <th>{{ 'Sub path'|trans }}</th>
+            <th>{{ 'Theme'|trans }}</th>
             <th>{{ 'Created at'|trans }}</th>
         </tr>
         </thead>
@@ -34,7 +33,18 @@
         {% for e in sites %}
             <tr>
                 <td><a href="{{ path('cms_admin.site_edit', {'id': e.id}) }}">{{ e.id }}</a></td>
-                <td><a href="{{ path('cms_admin.site_edit', {'id': e.id}) }}">{{ e.name }}</a></td>
+                <td>
+                    {% if not e.isEnabled %}
+                        <span style="float: right" class="badge badge-danger">DISABLED</span>
+                    {% endif %}
+
+                    <a href="{{ path('cms_admin.site_edit', {'id': e.id}) }}">{{ e.name }}</a>
+                    {% if e.comment %}
+                        <br>
+                        <br>
+                        {{ e.comment }}
+                    {% endif %}
+                </td>
                 <td>
                     <a href="{{ path('cms_admin.site_i18n', {'id': e.id}) }}" class="btn btn-sm btn-outline-info">Настроить: {{ e.multilanguageModeValue }}</a>
                     <br>
@@ -75,9 +85,8 @@
                     {% endif %}
                 </td>
                 #}
-                <td>{{ e.theme }}</td>
-                <td>{{ e.isEnabled }}</td>
                 <td>{{ e.subPath }}</td>
+                <td>{{ e.theme }}</td>
                 <td>{{ e.createdAt|format_date }}</td>
             </tr>
         {% endfor %}

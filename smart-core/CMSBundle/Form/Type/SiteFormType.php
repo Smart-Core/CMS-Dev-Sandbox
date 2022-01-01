@@ -76,7 +76,7 @@ class SiteFormType extends AbstractType
                 'help' => 'Подпуть сайта, например: domain.com/site1/',
                 'translation_domain' => false,
             ])
-            //->add('position')
+            ->add('comment')
 
             ->add('create', SubmitType::class, ['attr' => ['class' => 'btn-success']])
             ->add('update', SubmitType::class, ['attr' => ['class' => 'btn-success']])

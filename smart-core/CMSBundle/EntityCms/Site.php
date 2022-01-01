@@ -24,13 +24,15 @@ class Site
     const MULTILANGUAGE_MODE_PATH = 'path';
     const MULTILANGUAGE_MODE = [
         'off'    => 'Off (Single language)',
-        'domain' => 'Domain (en.domain.com, ru.domain.com)',
         'path'   => 'Path (domain.com/en/, domain.com/ru/)',
+        'cookie' => 'Cookie',
+        'domain' => 'Domain (en.domain.com, ru.domain.com)',
     ];
 
     use ColumnTrait\Id;
     use ColumnTrait\IsEnabled;
     use ColumnTrait\NameUnique;
+    use ColumnTrait\Comment;
     use ColumnTrait\CreatedAt;
 
     #[ORM\Column(type: 'string', length: 6, options: ['default' => 'off'])]
