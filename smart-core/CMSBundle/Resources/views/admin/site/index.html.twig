@@ -58,7 +58,7 @@
                             <li><b>{{ l.domain ?? 'N/A' }}</b> => {{ l.language }}</li>
                         {% endfor %}
                         </ol>
-                    {% elseif e.multilanguageMode == 'path' %}
+                    {% elseif e.multilanguageMode == 'path' or e.multilanguageMode == 'cookie' %}
                         Domain: <b>{{ e.domain ?? '---' }}</b>
                         <ol>
                             {% for l in e.languages %}
