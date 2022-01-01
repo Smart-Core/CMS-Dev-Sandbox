@@ -76,7 +76,11 @@ class SiteAddCommand extends AbstractCommand
         $name  = $input->getArgument('name');
         $theme = $input->getArgument('theme');
 
-        $this->cmsManager->addSite($name, $theme);
+        $this->cmsManager->addSite(
+            name: $name,
+            theme:  $theme,
+            clearCache: true,
+        );
 
         return self::SUCCESS;
     }

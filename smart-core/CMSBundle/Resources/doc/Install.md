@@ -68,10 +68,3 @@ security:
         - { path: ^/%cms.admin_path%, roles: ROLE_ADMIN }
         ......
 ```
-
-
-First run
-```shell
-bin/console cms:setup
-```
-

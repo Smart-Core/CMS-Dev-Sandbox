@@ -36,7 +36,7 @@ class CmsManager
         return $this->em;
     }
 
-    public function addSite(string $name, ?string $theme = null)
+    public function addSite(string $name, ?string $theme = null, bool $clearCache = false): Site
     {
         $site = new Site($name);
         $site->setTheme($theme);
@@ -44,7 +44,11 @@ class CmsManager
         $this->em->persist($site);
         $this->em->flush();
 
-        $this->execCommand('cache:clear'); // Очистка кеша и тутже вармап.
+        if ($clearCache) {
+            $this->execCommand('cache:clear'); // Очистка кеша и тутже вармап.
+        }
+
+        return $site;
     }
 
     public function getSiteEm(int|string $id): ObjectManager
@@ -165,7 +169,13 @@ class CmsManager
             $this->em->flush();
         }
 
-        foreach ($this->getSites() as $site) {
+        $sites = $this->getSites();
+
+        if (empty($sites)) {
+            $sites[] = $this->addSite('Default Site');
+        }
+
+        foreach ($sites as $site) {
             $siteDbName = 'site_' . $site->getId();
 
             $this->schemaUpdate($siteDbName);
