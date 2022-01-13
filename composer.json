@@ -23,7 +23,7 @@
         "doctrine/orm": "^2.10",
         "knplabs/knp-menu-bundle": "^3.2",
         "phpdocumentor/reflection-docblock": "^5.3",
-        "scienta/doctrine-json-functions": "^4.4",
+        "scienta/doctrine-json-functions": "^5.0",
         "sensio/framework-extra-bundle": "^6.2",
         "smart-core/rad-bundle": "dev-master",
         "sylius/theme-bundle": "^2.2",
